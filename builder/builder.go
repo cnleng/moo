@@ -1,17 +1,20 @@
 package builder
 
 type Builder interface {
-	Build(*Source) (*Bundle, error)
-	Release(*Bundle) error
-	Clean(*Bundle) error
+	Build(*Source, ...BuildOption) (*Bundle, error)
+	Release(*Bundle, ...ReleaseOption) error
+	Clean(*Bundle, ...CleanOption) error
 }
 
 type Source struct {
 	Name string
-	Path string
+	Dir  string
 }
 
 type Bundle struct {
+	Type   string
+	Binary string
+	Source *Source
 }
 
 var DefaultBuilder Builder

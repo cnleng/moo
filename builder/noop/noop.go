@@ -6,15 +6,15 @@ type noop struct {
 	options builder.Options
 }
 
-func (n noop) Build(s *builder.Source) (*builder.Bundle, error) {
+func (n noop) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bundle, error) {
 	return &builder.Bundle{}, nil
 }
 
-func (n noop) Release(b *builder.Bundle) error {
+func (n noop) Release(b *builder.Bundle, opts ...builder.ReleaseOption) error {
 	return nil
 }
 
-func (n noop) Clean(b *builder.Bundle) error {
+func (n noop) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {
 	return nil
 }
 
