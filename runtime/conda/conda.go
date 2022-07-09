@@ -1,6 +1,6 @@
 package conda
 
-import "github.com/mooctl/moo/runtime"
+import "github.com/moobu/moo/runtime"
 
 type conda struct {
 	store Store

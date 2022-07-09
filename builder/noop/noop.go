@@ -1,6 +1,6 @@
 package noop
 
-import "github.com/mooctl/moo/builder"
+import "github.com/moobu/moo/builder"
 
 type noop struct {
 	options builder.Options

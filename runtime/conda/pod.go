@@ -6,8 +6,8 @@ import (
 	"os/exec"
 	"sync"
 
-	"github.com/mooctl/moo/builder"
-	"github.com/mooctl/moo/runtime"
+	"github.com/moobu/moo/builder"
+	"github.com/moobu/moo/runtime"
 )
 
 type pod struct {

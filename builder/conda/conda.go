@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/mooctl/moo/builder"
+	"github.com/moobu/moo/builder"
 )
 
 type conda struct {
@@ -71,13 +71,9 @@ func (c *conda) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {
 }
 
 func New(opts ...builder.Option) builder.Builder {
-	options := builder.Options{
-		Output: os.Stdout,
-	}
+	options := builder.Options{Output: os.Stdout}
 	for _, o := range opts {
 		o(&options)
 	}
-	return &conda{
-		options: options,
-	}
+	return &conda{options: options}
 }
