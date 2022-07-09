@@ -11,12 +11,27 @@ type Options struct{}
 type Option func(*Options)
 
 type CreateOptions struct {
-	Namespace string
-	Bundle    *builder.Bundle
-	Image     string
 	Args      []string
 	Env       []string
+	Bundle    *builder.Bundle
 	Output    io.Writer
+	Image     string
+	Namespace string
+	Replicas  int
 }
 
 type CreateOption func(*CreateOptions)
+
+type ListOptions struct {
+	Name      string
+	Tag       string
+	Namespace string
+}
+
+type ListOption func(*ListOptions)
+
+type DeleteOptions struct {
+	Namespace string
+}
+
+type DeleteOption func(*DeleteOptions)
