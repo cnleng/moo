@@ -1,2 +1,2 @@
 # moo
-A [cloud-]native tool for machine learning workflow.
+A [cloud-]native engine for machine learning workflows.
