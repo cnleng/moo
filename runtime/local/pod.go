@@ -62,8 +62,8 @@ func (p *lpod) start() (err error) {
 }
 
 func (p *lpod) stream() {
-	go io.Copy(p.output, p.process.Stdout)
-	go io.Copy(p.output, p.process.Stderr)
+	go io.Copy(p.output, p.process.Out)
+	go io.Copy(p.output, p.process.Err)
 }
 
 func (p *lpod) wait() {

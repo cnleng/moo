@@ -7,11 +7,11 @@ import (
 )
 
 type Driver interface {
-	// Fork creates a new process
+	// Fork creates a new process group
 	Fork(*Runnable) (*Process, error)
-	// Kill kills a process
+	// Kill kills the process and its child processes
 	Kill(*Process) error
-	// Wait waits a process to exit
+	// Wait waits the process to exit
 	Wait(*Process) error
 }
 
@@ -22,8 +22,8 @@ type Runnable struct {
 }
 
 type Process struct {
-	ID     int
-	Stdin  io.Writer
-	Stdout io.Reader
-	Stderr io.Reader
+	ID  int
+	In  io.Writer
+	Out io.Reader
+	Err io.Reader
 }
