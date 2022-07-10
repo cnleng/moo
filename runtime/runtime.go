@@ -3,7 +3,7 @@ package runtime
 import "fmt"
 
 type Runtime interface {
-	// Create creates a pod
+	// Create creates a pod containing a process
 	Create(*Pod, ...CreateOption) error
 	// Delete deletes a pod
 	Delete(*Pod, ...DeleteOption) error
