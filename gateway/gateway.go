@@ -12,6 +12,7 @@ type Gateway interface {
 	Serve(net.Listener) error
 }
 
+// FIX: the handler cannot get the router
 // Handler is used by the gateway to pass on the incomming
 // requests to the pod using the same protocol the handler uses.
 type Handler interface {
@@ -22,14 +23,16 @@ type Handler interface {
 // here is the only gateway implementation needed
 type gateway struct {
 	options Options
+	mux     *http.ServeMux
 }
 
 func (g *gateway) Handle(path string, handler Handler) error {
+	g.mux.Handle(path, Cors(handler))
 	return nil
 }
 
 func (g *gateway) Serve(l net.Listener) error {
-	return nil
+	return http.Serve(l, g.mux)
 }
 
 func New(opts ...Option) Gateway {
