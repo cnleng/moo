@@ -16,6 +16,6 @@ func (h handler) String() string {
 	return "grpc"
 }
 
-func New() gateway.Handler {
+func New() gateway.Proxy {
 	return &handler{}
 }

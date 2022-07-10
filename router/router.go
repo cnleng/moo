@@ -14,3 +14,7 @@ type Route struct {
 	Protocol string // the protocol by which we communicate with the pod
 	Address  string // pod address (e.g. 10.0.0.1:80, /tmp/moo/xxx.sock)
 }
+
+func (r Route) Sum() uint32 {
+	return 0
+}

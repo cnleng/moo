@@ -9,7 +9,7 @@ import (
 type memory struct {
 	sync.RWMutex
 	options router.Options
-	routes  map[string]*router.Route
+	routes  map[string]map[uint32]*router.Route
 }
 
 func (m *memory) Register(r *router.Route) error {
@@ -31,6 +31,6 @@ func New(opts ...router.Option) router.Router {
 	}
 	return &memory{
 		options: options,
-		routes:  make(map[string]*router.Route),
+		routes:  make(map[string]map[uint32]*router.Route),
 	}
 }

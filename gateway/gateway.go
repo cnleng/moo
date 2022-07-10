@@ -1,21 +1,21 @@
 package gateway
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 )
 
 // Gateway passes on the incomming requests to the pods using
-// registered handlers. It has only one default implementation.
+// registered Proxies. It has only one default implementation.
 type Gateway interface {
-	Handle(string, Handler) error
+	Handle(Proxy) error
 	Serve(net.Listener) error
 }
 
-// FIX: the handler cannot get the router
-// Handler is used by the gateway to pass on the incomming
-// requests to the pod using the same protocol the handler uses.
-type Handler interface {
+// Proxy is used by the gateway to pass on the incomming requests
+// to the pod using the same protocol the Proxy uses.
+type Proxy interface {
 	http.Handler
 	String() string
 }
@@ -26,8 +26,8 @@ type gateway struct {
 	mux     *http.ServeMux
 }
 
-func (g *gateway) Handle(path string, handler Handler) error {
-	g.mux.Handle(path, Cors(handler))
+func (g *gateway) Handle(proxy Proxy) error {
+	g.mux.Handle(fmt.Sprintf("/%s/", proxy.String()), Cors(proxy))
 	return nil
 }
 
@@ -40,5 +40,8 @@ func New(opts ...Option) Gateway {
 	for _, o := range opts {
 		o(&options)
 	}
-	return &gateway{options: options}
+	return &gateway{
+		options: options,
+		mux:     http.NewServeMux(),
+	}
 }
