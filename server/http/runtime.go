@@ -36,10 +36,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		runtime.CreateWithNamespace(options.Namespace),
 	}
 	err := runtime.Create(args.Pod, opts...)
-	if err != nil {
-		WriteJSON(w, nil, err)
-		return
-	}
+	WriteJSON(w, nil, err)
 }
 
 type delArgs struct {
@@ -63,10 +60,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 
 	options := args.Options
 	err := runtime.Delete(args.Pod, runtime.DeleteWithNamespace(options.Namespace))
-	if err != nil {
-		WriteJSON(w, nil, err)
-		return
-	}
+	WriteJSON(w, nil, err)
 }
 
 func List(w http.ResponseWriter, r *http.Request) {
@@ -89,8 +83,5 @@ func List(w http.ResponseWriter, r *http.Request) {
 		runtime.ListWithNamespace(options.Namespace),
 	}
 	pods, err := runtime.List(opts...)
-	if err != nil {
-		WriteJSON(w, pods, err)
-		return
-	}
+	WriteJSON(w, pods, err)
 }

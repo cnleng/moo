@@ -22,10 +22,7 @@ func Build(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	bundle, err := builder.Build(source)
-	if err != nil {
-		WriteJSON(w, bundle, err)
-		return
-	}
+	WriteJSON(w, bundle, err)
 }
 
 func Release(w http.ResponseWriter, r *http.Request) {
@@ -43,10 +40,7 @@ func Release(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	err := builder.Release(&bundle)
-	if err != nil {
-		WriteJSON(w, nil, err)
-		return
-	}
+	WriteJSON(w, nil, err)
 }
 
 func Clean(w http.ResponseWriter, r *http.Request) {
@@ -64,8 +58,5 @@ func Clean(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	err := builder.Clean(&bundle)
-	if err != nil {
-		WriteJSON(w, nil, err)
-		return
-	}
+	WriteJSON(w, nil, err)
 }

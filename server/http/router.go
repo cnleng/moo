@@ -22,10 +22,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	err := router.Register(route)
-	if err != nil {
-		WriteJSON(w, nil, err)
-		return
-	}
+	WriteJSON(w, nil, err)
 }
 
 func Deregister(w http.ResponseWriter, r *http.Request) {
@@ -43,10 +40,7 @@ func Deregister(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	err := router.Deregister(route)
-	if err != nil {
-		WriteJSON(w, nil, err)
-		return
-	}
+	WriteJSON(w, nil, err)
 }
 
 func Lookup(w http.ResponseWriter, r *http.Request) {
@@ -64,10 +58,7 @@ func Lookup(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	routes, err := router.Lookup(args.Pod)
-	if err != nil {
-		WriteJSON(w, routes, err)
-		return
-	}
+	WriteJSON(w, routes, err)
 }
 
 type lookupArgs struct {

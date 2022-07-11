@@ -23,10 +23,14 @@ func (s *httpServer) Serve(l net.Listener) error {
 	mux.HandleFunc("/router/deregister", Deregister)
 	mux.HandleFunc("/router/lookup", Lookup)
 	// builder
-	mux.HandleFunc("/router/build", Build)
-	mux.HandleFunc("/router/release", Release)
-	mux.HandleFunc("/router/clean", Clean)
+	mux.HandleFunc("/builder/build", Build)
+	mux.HandleFunc("/builder/release", Release)
+	mux.HandleFunc("/builder/clean", Clean)
 	return http.Serve(l, mux)
+}
+
+func (httpServer) String() string {
+	return "http"
 }
 
 func New(opts ...server.Option) server.Server {
@@ -39,7 +43,11 @@ func New(opts ...server.Option) server.Server {
 
 func WriteJSON(w http.ResponseWriter, v any, err error) error {
 	w.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(args{err.Error(), v})
+	errmsg := ""
+	if err != nil {
+		errmsg = err.Error()
+	}
+	return json.NewEncoder(w).Encode(args{errmsg, v})
 }
 
 type args struct {

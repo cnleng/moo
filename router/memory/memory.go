@@ -54,9 +54,9 @@ func (m *memory) Lookup(pod string) ([]*router.Route, error) {
 	}
 
 	// clone in case that routes change
-	clone := make([]*router.Route, len(routes))
-	for i, route := range routes {
-		clone[i] = route
+	clone := make([]*router.Route, 0, len(routes))
+	for _, route := range routes {
+		clone = append(clone, route)
 	}
 	return clone, nil
 }
