@@ -7,7 +7,9 @@ import (
 	"log"
 	"net"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 
 	"github.com/moobu/moo/internal/cli"
 	"github.com/moobu/moo/presets"
@@ -59,14 +61,16 @@ func Server(c cli.Ctx) error {
 	}
 	log.Printf("[INFO] using presets: %s", preset)
 
-	l, err := listen(c)
+	uds := c.Bool("uds")
+	l, err := listen(c, uds)
 	if err != nil {
 		return err
 	}
 
-	errCh := make(chan error)
-	sigCh := make(chan os.Signal)
+	errCh := make(chan error, 1)
+	sigCh := make(chan os.Signal, 1)
 
+	signal.Notify(sigCh, syscall.SIGTERM, syscall.SIGINT)
 	go func(l net.Listener) {
 		err := server.Serve(l)
 		errCh <- err
@@ -80,18 +84,21 @@ func Server(c cli.Ctx) error {
 	case <-c.Done():
 		return c.Err()
 	case <-sigCh:
-		// TODO: do some close stuff if necessary?
-		log.Printf("[INFO] server stopped")
+		// do some close stuff if necessary
+		log.Printf("[INFO] stopping server")
+		if uds {
+			os.Remove(l.Addr().String())
+		}
 		return nil
 	}
 }
 
-func listen(c cli.Ctx) (net.Listener, error) {
+func listen(c cli.Ctx, uds bool) (net.Listener, error) {
 	//  we use the unix domain socket if using the local
 	//  presets or explicitly emitted the uds flag
 	network := "tcp"
 	address := fmt.Sprintf(":%d", c.Int("port"))
-	if c.Bool("uds") {
+	if uds {
 		address = filepath.Join(os.TempDir(), "moo.sock")
 		network = "unix"
 	}

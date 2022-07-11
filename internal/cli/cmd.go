@@ -125,12 +125,10 @@ func (c *Cmd) help(w io.Writer) error {
 	}
 
 	if c.Flags != nil {
-		fmt.Fprint(tw, " [options...]")
+		fmt.Fprint(tw, " [options...]\n")
 	} else {
-		fmt.Fprint(tw, " --help")
+		fmt.Fprint(tw, " --help\n")
 	}
-
-	fmt.Fprint(tw, "\n")
 
 	if c.cmds != nil {
 		fmt.Fprint(tw, "\nCOMMANDS:\n")

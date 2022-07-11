@@ -39,10 +39,10 @@ func New(opts ...server.Option) server.Server {
 
 func WriteJSON(w http.ResponseWriter, v any, err error) error {
 	w.Header().Set("Content-Type", "application/json")
-	return json.NewEncoder(w).Encode(args{err, v})
+	return json.NewEncoder(w).Encode(args{err.Error(), v})
 }
 
 type args struct {
-	Error   error
+	Error   string
 	Content any
 }
