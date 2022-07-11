@@ -14,7 +14,7 @@ The builder is used to turn sources into bundles which are then delivered to the
 
 ### Pod
 
-In a Kubernetes cluster, a pod is an instance that has several containers running in it. Here for Moo, we reuse the concept but only when running in a k8s or k3s cluster. When in a local machine, a pod refers to an isolated environment created by the Moo builder. In the environment runs the actual process, an inferencing service for instance. The way to isolate environments depends on which driver the Moo runtime uses. We'll explain that later.
+In a Kubernetes cluster, a pod is an instance that has several containers running in it. Here for Moo, we reuse the concept but only when running in a k8s or k3s cluster. When in a local machine, a pod refers to an isolated environment created by the Moo builder. In the isoluted environment runs the actual process, an inferencing service for instance. The way to isolate environments depends on which driver the Moo runtime uses. We'll explain that later.
 
 ### Runtime
 
