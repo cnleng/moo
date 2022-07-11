@@ -10,17 +10,17 @@ Here are some termiologies you need to know before diving in.
 
 ### Builder
 
-If Moo is running on your local machines, the builder is used to turn sources into bundles which then are delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git repository. The builder dose nothing if running in a Kubernetes cluster.
+The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git repository. A bundle is an OCI image when Moo is running in a Kubernetes cluster, while in your local machine it stays unchanged but with dependencies installed in an isolated environment.
 
 ### Pod
 
-In a Kubernetes cluster, a pod is an instance that has several containers running in it. Here in Moo, we reuse the concept but only when running in a k8s or k3s cluster. When on a local machine, a pod refers to a isoluted enviroment that runs the actual process, an inferencing API server for example.
+In a Kubernetes cluster, a pod is an instance that has several containers running in it. Here for Moo, we reuse the concept but only when running in a k8s or k3s cluster. When in a local machine, a pod refers to an isolated environment created by the Moo builder. In the environment runs the actual process, an inferencing service for instance. The way to isolate environments depends on which driver the Moo runtime uses. We'll explain that later.
 
 ### Runtime
 
 Runtime is the magic behind the Moo Engine, it maintains all the pods. For example, the runtime will restart those dead pods as long as it does not exceed the maximum retries of the pod.
 
-In a Kubernetes cluster, the runtime simply calls the rest API given by Kubernetes to create or delete pods or list them by conditions. While in your local machine, Moo uses some drivers implemented [here](./runtime/local/driver/) to make those approaches.
+In a Kubernetes cluster, the runtime simply calls the rest API given by Kubernetes to create or delete pods or list them by conditions. While in your local machine, Moo uses some drivers implemented [here](./runtime/local/driver/) to make those approaches and each driver needs to make an isolated environment for a pod. The simplest implementation Moo uses now is the [conda driver](./runtime/local/driver/conda/). ~~We will try to make a better implementation based directly on the cgroup and the namespace technique of Linux.~~ You can use the [Podman driver](./runtime/local/driver/podman/) instead.
 
 ### Router
 
