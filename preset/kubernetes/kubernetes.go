@@ -16,10 +16,10 @@ import (
 type Presets struct{}
 
 func (Presets) Setup(c cli.Ctx) error {
-	runtime.DefaultRuntime = kubernetes.New()
-	builder.DefaultBuilder = podman.New(builder.Output(os.Stdout))
-	router.DefaultRouter = nil // TODO: should we have a router built on kubernetes?
-	server.DefaultServer = http.New()
+	runtime.Default = kubernetes.New()
+	builder.Default = podman.New(builder.Output(os.Stdout))
+	router.Default = nil // TODO: should we have a router built on kubernetes?
+	server.Default = http.New()
 	return nil
 }
 

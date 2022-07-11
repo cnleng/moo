@@ -18,10 +18,10 @@ import (
 type Presets struct{}
 
 func (Presets) Setup(c cli.Ctx) error {
-	runtime.DefaultRuntime = local.New(raw.New()) // TODO: use conda driver
-	builder.DefaultBuilder = conda.New(builder.Output(os.Stdout))
-	router.DefaultRouter = memory.New()
-	server.DefaultServer = http.New()
+	runtime.Default = local.New(raw.New()) // TODO: use conda driver
+	builder.Default = conda.New(builder.Output(os.Stdout))
+	router.Default = memory.New()
+	server.Default = http.New()
 	return nil
 }
 

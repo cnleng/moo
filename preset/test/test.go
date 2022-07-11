@@ -17,10 +17,10 @@ import (
 type Presets struct{}
 
 func (Presets) Setup(c cli.Ctx) error {
-	builder.DefaultBuilder = bnoop.New(builder.Output(os.Stdout))
-	runtime.DefaultRuntime = rnoop.New()
-	router.DefaultRouter = memory.New()
-	server.DefaultServer = http.New()
+	builder.Default = bnoop.New(builder.Output(os.Stdout))
+	runtime.Default = rnoop.New()
+	router.Default = memory.New()
+	server.Default = http.New()
 	return nil
 }
 

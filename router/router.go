@@ -31,16 +31,16 @@ func (r Route) Sum() uint32 {
 	return h.Sum32()
 }
 
-var DefaultRouter Router
+var Default Router
 
 func Register(r *Route) error {
-	return DefaultRouter.Register(r)
+	return Default.Register(r)
 }
 
 func Deregister(r *Route) error {
-	return DefaultRouter.Deregister(r)
+	return Default.Deregister(r)
 }
 
 func Lookup(pod string) ([]*Route, error) {
-	return DefaultRouter.Lookup(pod)
+	return Default.Lookup(pod)
 }

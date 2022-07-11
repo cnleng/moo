@@ -17,16 +17,16 @@ type Bundle struct {
 	Source *Source
 }
 
-var DefaultBuilder Builder
+var Default Builder
 
 func Build(s *Source) (*Bundle, error) {
-	return DefaultBuilder.Build(s)
+	return Default.Build(s)
 }
 
 func Release(b *Bundle) error {
-	return DefaultBuilder.Release(b)
+	return Default.Release(b)
 }
 
 func Clean(b *Bundle) error {
-	return DefaultBuilder.Clean(b)
+	return Default.Clean(b)
 }

@@ -18,7 +18,7 @@ func (n noop) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// strip out the protocol name
-	pod := r.URL.Path[4:]
+	pod := r.URL.Path[5:]
 	fmt.Fprint(w, pod)
 }
 

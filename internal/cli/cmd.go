@@ -107,7 +107,7 @@ func (c *Cmd) help(w io.Writer) error {
 	tw := tabwriter.NewWriter(w, 0, 8, 1, '\t', tabwriter.AlignRight)
 
 	if len(c.Help) != 0 {
-		fmt.Fprintf(tw, "NAME:\n\t%s v%s\n\n", c.Help, c.Version)
+		fmt.Fprintf(tw, "NAME:\n\t%s %s\n\n", c.Help, c.Version)
 	}
 
 	sep := ""

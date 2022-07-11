@@ -29,8 +29,10 @@ func (p *Pod) Status(status Status, err error) {
 	if p.Metadata == nil {
 		p.Metadata = make(map[string]string)
 	}
+	if err != nil {
+		p.Metadata["error"] = err.Error()
+	}
 	p.Metadata["status"] = status.String()
-	p.Metadata["error"] = err.Error()
 }
 
 type Status int8
@@ -51,24 +53,24 @@ var StatusText = [...]string{
 	"EXITED",
 }
 
-var DefaultRuntime Runtime
+var Default Runtime
 
 func Create(pod *Pod, opts ...CreateOption) error {
-	return DefaultRuntime.Create(pod, opts...)
+	return Default.Create(pod, opts...)
 }
 
 func Delete(pod *Pod, opts ...DeleteOption) error {
-	return DefaultRuntime.Delete(pod, opts...)
+	return Default.Delete(pod, opts...)
 }
 
 func List(opts ...ListOption) ([]*Pod, error) {
-	return DefaultRuntime.List(opts...)
+	return Default.List(opts...)
 }
 
 func Start() error {
-	return DefaultRuntime.Start()
+	return Default.Start()
 }
 
 func Stop() error {
-	return DefaultRuntime.Stop()
+	return Default.Stop()
 }

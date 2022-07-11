@@ -153,6 +153,7 @@ func (l *local) Stop() error {
 			pod.stop()
 		}
 	}
+	l.wg.Wait()
 	return nil
 }
 
