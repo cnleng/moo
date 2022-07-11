@@ -50,3 +50,25 @@ var StatusText = [...]string{
 	"RUNNING",
 	"EXITED",
 }
+
+var DefaultRuntime Runtime
+
+func Create(pod *Pod, opts ...CreateOption) error {
+	return DefaultRuntime.Create(pod, opts...)
+}
+
+func Delete(pod *Pod, opts ...DeleteOption) error {
+	return DefaultRuntime.Delete(pod, opts...)
+}
+
+func List(opts ...ListOption) ([]*Pod, error) {
+	return DefaultRuntime.List(opts...)
+}
+
+func Start() error {
+	return DefaultRuntime.Start()
+}
+
+func Stop() error {
+	return DefaultRuntime.Stop()
+}

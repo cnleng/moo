@@ -30,3 +30,17 @@ func (r Route) Sum() uint32 {
 	h.Write([]byte(r.Pod + r.Protocol + r.Address))
 	return h.Sum32()
 }
+
+var DefaultRouter Router
+
+func Register(r *Route) error {
+	return DefaultRouter.Register(r)
+}
+
+func Deregister(r *Route) error {
+	return DefaultRouter.Deregister(r)
+}
+
+func Lookup(pod string) ([]*Route, error) {
+	return DefaultRouter.Lookup(pod)
+}
