@@ -1,5 +1,15 @@
 package router
 
+import (
+	"errors"
+	"hash/fnv"
+)
+
+var (
+	ErrDuplicated = errors.New("duplicated route")
+	ErrNotFound   = errors.New("no such route")
+)
+
 type Router interface {
 	// Register adds a route to a pod
 	Register(*Route) error
@@ -16,5 +26,7 @@ type Route struct {
 }
 
 func (r Route) Sum() uint32 {
-	return 0
+	h := fnv.New32()
+	h.Write([]byte(r.Pod + r.Protocol + r.Address))
+	return h.Sum32()
 }
