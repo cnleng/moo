@@ -10,7 +10,7 @@ Here are some termiologies you need to know before diving in.
 
 ### Builder
 
-The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git repository. A bundle is an OCI image when Moo is running in a Kubernetes cluster, while in your local machine it stays unchanged but with dependencies installed in an isolated environment.
+The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git repository like [GitHub](https://github.com). A bundle is an OCI image when Moo is running in a Kubernetes cluster, while in your local machine it stays unchanged but with dependencies installed in an isolated environment.
 
 ### Pod
 
