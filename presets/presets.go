@@ -1,6 +1,8 @@
 package presets
 
 import (
+	"errors"
+
 	"github.com/moobu/moo/internal/cli"
 	"github.com/moobu/moo/presets/kubernetes"
 	"github.com/moobu/moo/presets/local"
@@ -8,7 +10,7 @@ import (
 )
 
 type Presets interface {
-	Setup(cli.Ctx)
+	Setup(cli.Ctx) error
 	String() string
 }
 
@@ -24,4 +26,12 @@ func Register(p Presets) {
 
 func Deregister(p Presets) {
 	delete(presets, p.String())
+}
+
+func Use(c cli.Ctx, name string) error {
+	preset, ok := presets[name]
+	if !ok {
+		return errors.New("no such presets")
+	}
+	return preset.Setup(c)
 }

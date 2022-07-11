@@ -34,7 +34,7 @@ func (c *ctx) Args() []string {
 }
 
 func (c *ctx) Flag(key string) Flag {
-	for _, v := range c.cmd.flags {
+	for _, v := range c.cmd.Flags {
 		if key == v.Key() {
 			return v
 		}

@@ -19,9 +19,9 @@ type Cmd struct {
 	Help    string
 	Version string
 	Args    []string
-	flags   []Flag
-	Cmds    []*Cmd
-	Action  func(Ctx) error
+	Flags   []Flag
+	cmds    []*Cmd
+	Run     func(Ctx) error
 
 	set *flag.FlagSet
 	// root   *Cmd
@@ -31,11 +31,7 @@ type Cmd struct {
 }
 
 func (c *Cmd) Init() {
-	c.init("", c, c.flags)
-}
-
-func (c *Cmd) Run() error {
-	return c.RunCtx(context.Background())
+	c.init("", c, c.Flags)
 }
 
 func (c *Cmd) RunCtx(ctx context.Context) error {
@@ -48,7 +44,7 @@ func (c *Cmd) RunCtx(ctx context.Context) error {
 		return errors.New("no such command")
 	}
 
-	if cmd.Action == nil {
+	if cmd.Run == nil {
 		return cmd.help(os.Stdout)
 	}
 
@@ -75,11 +71,11 @@ func (c *Cmd) RunCtx(ctx context.Context) error {
 	}
 
 	// execute action
-	return cmd.Action(context)
+	return cmd.Run(context)
 }
 
 func (c *Cmd) Register(cmd *Cmd) {
-	c.Cmds = append(c.Cmds, cmd)
+	c.cmds = append(c.cmds, cmd)
 }
 
 func (c *Cmd) find(names []string, i int) *Cmd {
@@ -87,7 +83,7 @@ func (c *Cmd) find(names []string, i int) *Cmd {
 		return c
 	}
 
-	for _, cmd := range c.Cmds {
+	for _, cmd := range c.cmds {
 		if cmd.Name == names[i] {
 			if c := cmd.find(names, len(cmd.Args)+i+1); c != nil {
 				return c
@@ -99,7 +95,7 @@ func (c *Cmd) find(names []string, i int) *Cmd {
 }
 
 func (c *Cmd) validate() error {
-	for _, flag := range c.flags {
+	for _, flag := range c.Flags {
 		if flag.Invalid() {
 			return fmt.Errorf("option `%s` is required", flag.Key())
 		}
@@ -116,7 +112,7 @@ func (c *Cmd) help(w io.Writer) error {
 
 	fmt.Fprintf(tw, "USAGE:\n\t%s %s", c.parent, c.Name)
 
-	if c.Cmds != nil {
+	if c.cmds != nil {
 		fmt.Fprint(tw, " <command>")
 	}
 
@@ -124,22 +120,22 @@ func (c *Cmd) help(w io.Writer) error {
 		fmt.Fprintf(tw, " <%s>", arg)
 	}
 
-	if c.flags != nil {
+	if c.Flags != nil {
 		fmt.Fprint(tw, " [options...]")
 	}
 
 	fmt.Fprint(tw, "\n")
 
-	if c.Cmds != nil {
+	if c.cmds != nil {
 		fmt.Fprint(tw, "\nCOMMANDS:\n")
-		for _, cmd := range c.Cmds {
+		for _, cmd := range c.cmds {
 			fmt.Fprintf(tw, "\t%s\t%s\n", cmd.Name, cmd.Help)
 		}
 	}
 
-	if c.flags != nil {
+	if c.Flags != nil {
 		fmt.Fprint(tw, "\nOPTIONS:\n")
-		for _, flag := range c.flags {
+		for _, flag := range c.Flags {
 			fmt.Fprintf(tw, "\t--%s\t%s\t(default: %v) \n", flag.Key(), flag.Help(), flag.Var())
 		}
 	}
@@ -148,13 +144,13 @@ func (c *Cmd) help(w io.Writer) error {
 }
 
 func (c *Cmd) init(parent string, root *Cmd, globalFlags []Flag) {
-	if c.flags != nil {
-		sort.Slice(c.flags, func(i, j int) bool {
-			return c.flags[i].Key() < c.flags[j].Key()
+	if c.Flags != nil {
+		sort.Slice(c.Flags, func(i, j int) bool {
+			return c.Flags[i].Key() < c.Flags[j].Key()
 		})
 
 		set := flag.NewFlagSet(c.Name, flag.ExitOnError)
-		for _, flag := range c.flags {
+		for _, flag := range c.Flags {
 			switch f := flag.(type) {
 			case *BoolFlag:
 				set.BoolVar(&f.Value, f.Name, f.Value, f.Usage)
@@ -192,8 +188,8 @@ func (c *Cmd) init(parent string, root *Cmd, globalFlags []Flag) {
 
 	c.parent = parent
 
-	for _, cmd := range c.Cmds {
-		cmd.flags = append(cmd.flags, globalFlags...)
+	for _, cmd := range c.cmds {
+		cmd.Flags = append(cmd.Flags, globalFlags...)
 		cmd.init(fmt.Sprintf("%s%s", parent, c.Name), root, globalFlags)
 	}
 }
