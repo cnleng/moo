@@ -1,6 +1,6 @@
 # m∞
 
-Moo is an engine for machine learning workflows that runs on your local machine or in a Kubernetes cluster. M stands for machine learning on which we are working and ∞ for nothing but being 🆒.
+Moo is an engine for running machine learning workflows locally or in a Kubernetes cluster. M stands for machine learning on which we are working and ∞ for nothing but being 🆒.
 
 ## Architecture
 
