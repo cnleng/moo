@@ -20,7 +20,7 @@ In a Kubernetes cluster, a pod is an instance that has several containers runnin
 
 Runtime is the magic behind the Moo Engine, it maintains all the pods. For example, the runtime will restart those dead pods as long as it does not exceed the maximum retries of the pod.
 
-In a Kubernetes cluster, the runtime simply calls the rest API given by Kubernetes to create or delete pods or list them by conditions. While in your local machine, Moo uses some drivers implemented [here](./runtime/local/driver/) to make those approaches and each driver needs to make an isolated environment for a pod. The simplest implementation Moo uses now is the [conda driver](./runtime/local/driver/conda/). ~~We will try to make a better implementation based directly on the cgroup and the namespace technique of Linux.~~ You can use the [Podman driver](./runtime/local/driver/podman/) instead.
+In a Kubernetes cluster, the runtime simply calls the rest API given by Kubernetes to create or delete pods or list them by conditions. While in your local machine, Moo uses some drivers implemented [here](./runtime/local/driver/) to make those approaches and each driver needs to run a pod in an isolated environment created by the Moo builder. The simplest implementation Moo uses now is the [conda driver](./runtime/local/driver/conda/). ~~We will try to make a better implementation based directly on the cgroup and the namespace technique of Linux.~~ You can use the [Podman driver](./runtime/local/driver/podman/) instead.
 
 ### Router
 
