@@ -107,10 +107,14 @@ func (c *Cmd) help(w io.Writer) error {
 	tw := tabwriter.NewWriter(w, 0, 8, 1, '\t', tabwriter.AlignRight)
 
 	if len(c.Help) != 0 {
-		fmt.Fprintf(tw, "NAME:\n\t%s %s\n\n", c.Help, c.Version)
+		fmt.Fprintf(tw, "NAME:\n\t%s v%s\n\n", c.Help, c.Version)
 	}
 
-	fmt.Fprintf(tw, "USAGE:\n\t%s %s", c.parent, c.Name)
+	sep := ""
+	if len(c.parent) > 0 {
+		sep = " "
+	}
+	fmt.Fprintf(tw, "USAGE:\n\t%s%s%s", c.parent, sep, c.Name)
 
 	if c.cmds != nil {
 		fmt.Fprint(tw, " <command>")
@@ -122,6 +126,8 @@ func (c *Cmd) help(w io.Writer) error {
 
 	if c.Flags != nil {
 		fmt.Fprint(tw, " [options...]")
+	} else {
+		fmt.Fprint(tw, " --help")
 	}
 
 	fmt.Fprint(tw, "\n")
@@ -136,7 +142,7 @@ func (c *Cmd) help(w io.Writer) error {
 	if c.Flags != nil {
 		fmt.Fprint(tw, "\nOPTIONS:\n")
 		for _, flag := range c.Flags {
-			fmt.Fprintf(tw, "\t--%s\t%s\t(default: %v) \n", flag.Key(), flag.Help(), flag.Var())
+			fmt.Fprintf(tw, "\t--%s\t%s\t(default %v) \n", flag.Key(), flag.Help(), flag.Var())
 		}
 	}
 

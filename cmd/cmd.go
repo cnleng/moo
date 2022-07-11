@@ -13,5 +13,6 @@ var cmd = &cli.Cmd{
 }
 
 func Run() error {
+	cmd.Init()
 	return cmd.RunCtx(context.Background())
 }
