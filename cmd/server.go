@@ -12,7 +12,7 @@ import (
 	"syscall"
 
 	"github.com/moobu/moo/internal/cli"
-	"github.com/moobu/moo/presets"
+	"github.com/moobu/moo/preset"
 	"github.com/moobu/moo/server"
 )
 
@@ -23,9 +23,9 @@ func init() {
 		Run:  Server,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:  "presets",
+				Name:  "preset",
 				Usage: "Presets initializing the server",
-				Value: "local", // default presets
+				Value: "local", // default preset
 			},
 			&cli.IntFlag{
 				Name:  "port",
@@ -55,11 +55,11 @@ func init() {
 }
 
 func Server(c cli.Ctx) error {
-	preset := c.String("presets")
-	if err := presets.Use(c, preset); err != nil {
+	set := c.String("preset")
+	if err := preset.Use(c, set); err != nil {
 		return err
 	}
-	log.Printf("[INFO] using presets: %s", preset)
+	log.Printf("[INFO] using preset: %s", set)
 
 	uds := c.Bool("uds")
 	l, err := listen(c, uds)
@@ -95,7 +95,7 @@ func Server(c cli.Ctx) error {
 
 func listen(c cli.Ctx, uds bool) (net.Listener, error) {
 	//  we use the unix domain socket if using the local
-	//  presets or explicitly emitted the uds flag
+	//  preset or explicitly emitted the uds flag
 	network := "tcp"
 	address := fmt.Sprintf(":%d", c.Int("port"))
 	if uds {

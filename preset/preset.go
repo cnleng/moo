@@ -1,12 +1,12 @@
-package presets
+package preset
 
 import (
 	"errors"
 
 	"github.com/moobu/moo/internal/cli"
-	"github.com/moobu/moo/presets/kubernetes"
-	"github.com/moobu/moo/presets/local"
-	"github.com/moobu/moo/presets/test"
+	"github.com/moobu/moo/preset/kubernetes"
+	"github.com/moobu/moo/preset/local"
+	"github.com/moobu/moo/preset/test"
 )
 
 type Presets interface {
@@ -14,24 +14,24 @@ type Presets interface {
 	String() string
 }
 
-var presets = map[string]Presets{
+var preset = map[string]Presets{
 	"test":       test.Presets{},
 	"local":      local.Presets{},
 	"kubernetes": kubernetes.Presets{},
 }
 
 func Register(p Presets) {
-	presets[p.String()] = p
+	preset[p.String()] = p
 }
 
 func Deregister(p Presets) {
-	delete(presets, p.String())
+	delete(preset, p.String())
 }
 
 func Use(c cli.Ctx, name string) error {
-	preset, ok := presets[name]
+	preset, ok := preset[name]
 	if !ok {
-		return errors.New("no such presets")
+		return errors.New("no such preset")
 	}
 	return preset.Setup(c)
 }
