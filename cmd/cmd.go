@@ -13,6 +13,8 @@ import (
 	"github.com/moobu/moo/internal/cli"
 )
 
+const defaultServerAddr = "127.0.0.1:11451"
+
 var cmd = &cli.Cmd{
 	Name:     "moo",
 	Help:     "A pluggable serverless engine",

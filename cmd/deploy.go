@@ -3,13 +3,16 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/moobu/moo/client"
+	"github.com/moobu/moo/client/http"
 	"github.com/moobu/moo/internal/cli"
+	"github.com/moobu/moo/runtime"
 )
 
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "deploy",
-		Help: "Deploy a source",
+		Help: "Deploy a pod",
 		Pos:  []string{"source"},
 		Run:  Deploy,
 		Flags: []cli.Flag{
@@ -36,6 +39,11 @@ func init() {
 				Name:  "arg",
 				Usage: "Arguments passing in",
 			},
+			&cli.StringFlag{
+				Name:  "server",
+				Usage: "Address of the server",
+				Value: defaultServerAddr,
+			},
 		},
 	})
 }
@@ -43,5 +51,7 @@ func init() {
 func Deploy(c cli.Ctx) error {
 	source := c.Pos()[0]
 	fmt.Println(source)
+	cli := http.New(client.Server(c.String("server")))
+	cli.Create(&runtime.Pod{})
 	return nil
 }

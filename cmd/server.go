@@ -17,7 +17,7 @@ import (
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "server",
-		Help: "Run Moo server",
+		Help: "Run the server",
 		Run:  Server,
 		Flags: []cli.Flag{
 			&cli.StringFlag{

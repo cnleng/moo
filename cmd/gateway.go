@@ -18,12 +18,12 @@ import (
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "gateway",
-		Help: "Run Moo API gateway",
+		Help: "Run the API gateway",
 		Run:  Gateway,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "server",
-				Usage: "Address of Moo server",
+				Usage: "Address of the server",
 				Value: "127.0.0.1:11451",
 			},
 			&cli.IntFlag{

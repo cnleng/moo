@@ -5,20 +5,8 @@ import "github.com/moobu/moo/internal/cli"
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "kill",
-		Help: "Kill pods",
+		Help: "Kill one or more pods",
 		Run:  List,
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:  "ns",
-				Usage: "Kill pods in a namespace",
-				Value: "moo",
-			},
-			&cli.BoolFlag{
-				Name:  "all",
-				Usage: "Kill pods in all namespaces",
-				Value: false,
-			},
-		},
 	})
 }
 

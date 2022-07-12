@@ -5,7 +5,7 @@ import "github.com/moobu/moo/internal/cli"
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "logs",
-		Help: "Stream out Pod's output",
+		Help: "Output log file",
 		Run:  Logs,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
