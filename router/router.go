@@ -27,7 +27,7 @@ type Route struct {
 
 func (r Route) Sum() uint32 {
 	h := fnv.New32()
-	h.Write([]byte(r.Pod + r.Protocol))
+	h.Write([]byte(r.Pod + r.Protocol + r.Address))
 	return h.Sum32()
 }
 

@@ -56,6 +56,7 @@ func Gateway(c cli.Ctx) error {
 	gw := gateway.New()
 	errCh := make(chan error, 1)
 	sigCh := make(chan os.Signal, 1)
+
 	// starts the server and listens for termination
 	signal.Notify(sigCh, syscall.SIGTERM, syscall.SIGINT)
 	go func(l net.Listener) {
@@ -63,9 +64,10 @@ func Gateway(c cli.Ctx) error {
 		errCh <- err
 	}(ln)
 
+	// use the client as the router
 	server := c.String("server")
-	router := http.New(client.Server(server))
-	gw.Handle(proxy.New(gateway.Router(router)))
+	client := http.New(client.Server(server))
+	gw.Handle(proxy.New(gateway.Router(client)))
 
 	log.Printf("[INFO] gateway started at %s", ln.Addr())
 	select {

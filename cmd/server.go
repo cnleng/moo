@@ -20,6 +20,11 @@ func init() {
 		Help: "Starts Moo server",
 		Run:  Server,
 		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "preset",
+				Usage: "Presets initializing the server",
+				Value: "local", // default preset
+			},
 			&cli.IntFlag{
 				Name:  "port",
 				Usage: "Port the server listens on",
@@ -29,19 +34,6 @@ func init() {
 				Name:  "uds",
 				Usage: "Use unix domain socket address",
 				Value: false,
-			},
-			&cli.BoolFlag{
-				Name:  "secure",
-				Usage: "Use TLS",
-				Value: false,
-			},
-			&cli.StringFlag{
-				Name:  "cert",
-				Usage: "TLS cert file",
-			},
-			&cli.StringFlag{
-				Name:  "key",
-				Usage: "TLS key file",
 			},
 			&cli.BoolFlag{
 				Name:  "gateway",

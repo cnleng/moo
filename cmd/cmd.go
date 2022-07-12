@@ -17,13 +17,6 @@ var cmd = &cli.Cmd{
 	Name:    "moo",
 	Help:    "A pluggable serverless engine",
 	Version: "v0.0.1",
-	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:  "preset",
-			Usage: "Presets initializing the server",
-			Value: "local", // default preset
-		},
-	},
 }
 
 func Run() error {

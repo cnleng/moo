@@ -39,7 +39,7 @@ func (p proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	rawURL := fmt.Sprintf("http://%s", route.Address)
 	target, err := url.Parse(rawURL)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	// reverse proxy to the selected route
