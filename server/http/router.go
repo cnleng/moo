@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/moobu/moo/router"
@@ -58,6 +59,10 @@ func Lookup(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	routes, err := router.Lookup(args.Pod)
+	if errors.Is(err, router.ErrNotFound) {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 	WriteJSON(w, routes, err)
 }
 

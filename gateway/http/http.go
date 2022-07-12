@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 	"net/url"
 
 	"github.com/moobu/moo/gateway"
+	"github.com/moobu/moo/router"
 )
 
 type proxy struct {
@@ -24,8 +26,12 @@ func (p proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// all the routes to the pod
 	pod := r.URL.Path[5:]
 	routes, err := p.options.Router.Lookup(pod)
-	if err != nil {
+	if errors.Is(err, router.ErrNotFound) {
 		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	// select a random route

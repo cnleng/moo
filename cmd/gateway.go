@@ -7,10 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/moobu/moo/client"
+	"github.com/moobu/moo/client/http"
 	"github.com/moobu/moo/gateway"
-	"github.com/moobu/moo/gateway/http"
+	proxy "github.com/moobu/moo/gateway/http"
 	"github.com/moobu/moo/internal/cli"
-	"github.com/moobu/moo/router/client"
 )
 
 func init() {
@@ -27,7 +28,7 @@ func init() {
 			&cli.IntFlag{
 				Name:  "port",
 				Usage: "Port the gateway listens on",
-				Value: 80, // default gateway port
+				Value: 8080, // default gateway port
 			},
 			&cli.BoolFlag{
 				Name:  "secure",
@@ -62,8 +63,9 @@ func Gateway(c cli.Ctx) error {
 		errCh <- err
 	}(ln)
 
-	router := client.New()
-	gw.Handle(http.New(gateway.Router(router)))
+	server := c.String("server")
+	router := http.New(client.Server(server))
+	gw.Handle(proxy.New(gateway.Router(router)))
 
 	log.Printf("[INFO] gateway started at %s", ln.Addr())
 	select {

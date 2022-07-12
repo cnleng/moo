@@ -15,17 +15,17 @@ type httpServer struct {
 func (s *httpServer) Serve(l net.Listener) error {
 	mux := http.NewServeMux()
 	// runtime
-	mux.HandleFunc("/runtime/create", Create)
-	mux.HandleFunc("/runtime/delete", Delete)
-	mux.HandleFunc("/runtime/list", List)
+	mux.HandleFunc("/create", Create)
+	mux.HandleFunc("/delete", Delete)
+	mux.HandleFunc("/list", List)
 	// routes
-	mux.HandleFunc("/router/register", Register)
-	mux.HandleFunc("/router/deregister", Deregister)
-	mux.HandleFunc("/router/lookup", Lookup)
+	mux.HandleFunc("/register", Register)
+	mux.HandleFunc("/deregister", Deregister)
+	mux.HandleFunc("/lookup", Lookup)
 	// builder
-	mux.HandleFunc("/builder/build", Build)
-	mux.HandleFunc("/builder/release", Release)
-	mux.HandleFunc("/builder/clean", Clean)
+	mux.HandleFunc("/build", Build)
+	mux.HandleFunc("/release", Release)
+	mux.HandleFunc("/clean", Clean)
 	return http.Serve(l, mux)
 }
 
@@ -47,10 +47,10 @@ func WriteJSON(w http.ResponseWriter, v any, err error) error {
 	if err != nil {
 		errmsg = err.Error()
 	}
-	return json.NewEncoder(w).Encode(args{errmsg, v})
+	return json.NewEncoder(w).Encode(Args{errmsg, v})
 }
 
-type args struct {
+type Args struct {
 	Error   string
 	Content any
 }

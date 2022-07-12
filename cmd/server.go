@@ -10,7 +10,6 @@ import (
 	"github.com/moobu/moo/builder"
 	"github.com/moobu/moo/internal/cli"
 	"github.com/moobu/moo/preset"
-	"github.com/moobu/moo/router"
 	"github.com/moobu/moo/runtime"
 	"github.com/moobu/moo/server"
 )
@@ -77,23 +76,13 @@ func Server(c cli.Ctx) error {
 		errCh <- err
 	}(ln)
 
-	// register the server itself
-	err = router.Default.Register(&router.Route{
-		Pod:      "/moo/server",
-		Protocol: server.String(),
-		Address:  addr,
-	})
-	if err != nil {
-		return err
-	}
-
 	// see if we need to initiate the API geteway
 	if c.Bool("gateway") {
 		bin := os.Args[0]
 		err := runtime.Default.Create(&runtime.Pod{Name: "gateway"},
 			runtime.CreateWithNamespace("moo"),
 			runtime.Bundle(&builder.Bundle{Binary: bin}),
-			runtime.Args("gateway"),
+			runtime.Args("gateway", "--server", addr),
 			runtime.Output(os.Stdout))
 		if err != nil {
 			return err
@@ -104,7 +93,7 @@ func Server(c cli.Ctx) error {
 		return err
 	}
 
-	log.Printf("[INFO] serving at %s", addr)
+	log.Printf("[INFO] server started at %s", addr)
 	select {
 	case err := <-errCh:
 		return err

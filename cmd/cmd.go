@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"path/filepath"
@@ -65,4 +66,8 @@ func listen(c cli.Ctx, uds bool) (net.Listener, error) {
 		ClientAuth:   tls.RequireAnyClientCert,
 	}
 	return tls.NewListener(listener, config), nil
+}
+
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }
