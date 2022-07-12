@@ -19,14 +19,14 @@ type Bundle struct {
 
 var Default Builder
 
-func Build(s *Source) (*Bundle, error) {
-	return Default.Build(s)
+func Build(s *Source, opts ...BuildOption) (*Bundle, error) {
+	return Default.Build(s, opts...)
 }
 
-func Release(b *Bundle) error {
-	return Default.Release(b)
+func Release(b *Bundle, opts ...ReleaseOption) error {
+	return Default.Release(b, opts...)
 }
 
-func Clean(b *Bundle) error {
-	return Default.Clean(b)
+func Clean(b *Bundle, opts ...CleanOption) error {
+	return Default.Clean(b, opts...)
 }

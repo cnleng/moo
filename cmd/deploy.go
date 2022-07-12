@@ -10,7 +10,7 @@ func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "deploy",
 		Help: "Deploy a source",
-		Args: []string{"source"},
+		Pos:  []string{"source"},
 		Run:  Deploy,
 		Flags: []cli.Flag{
 			&cli.IntFlag{
@@ -41,7 +41,7 @@ func init() {
 }
 
 func Deploy(c cli.Ctx) error {
-	args := c.Args()
-	fmt.Println(args)
+	source := c.Pos()[0]
+	fmt.Println(source)
 	return nil
 }

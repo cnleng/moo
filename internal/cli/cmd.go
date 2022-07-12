@@ -15,13 +15,14 @@ import (
 type Intercept func(Ctx) error
 
 type Cmd struct {
-	Name    string
-	Help    string
-	Version string
-	Args    []string
-	Flags   []Flag
-	cmds    []*Cmd
-	Run     func(Ctx) error
+	Name     string
+	Help     string
+	Version  string
+	Wildcard bool
+	Pos      []string
+	Flags    []Flag
+	cmds     []*Cmd
+	Run      func(Ctx) error
 
 	set *flag.FlagSet
 	// root   *Cmd
@@ -34,48 +35,51 @@ func (c *Cmd) Init() {
 	c.init("", c, c.Flags)
 }
 
-func (c *Cmd) RunCtx(ctx context.Context) error {
-	args := os.Args[1:]
+func (c *Cmd) RunCtx(x context.Context) error {
+	// find the index of the first flag
+	args := os.Args
 	i, help := seperate(args)
-	// see if we need to strip out the position argument
-	j := i
-	if !help {
-		j -= len(c.Args) + 1
-	}
 
-	// find command
-	cmd := c.find(args[:j], 0)
+	// find the subcommand. offset is the number of
+	// position arguments of the subcommand.
+	cmd, offset := find(c, args[:i+1], help)
 	if cmd == nil {
 		return errors.New("no such command")
 	}
 
+	// print the help information of this subcommand
+	// if it has no user defined function
 	if cmd.Run == nil {
 		return cmd.help(os.Stdout)
 	}
 
-	// parse flags
+	// parse flags if we've got any
 	if i < len(args) {
 		if err := cmd.set.Parse(args[i:]); err != nil {
 			return err
 		}
 	}
 
-	// validate flags
+	// see if we are missing any flags
 	if err := cmd.validate(); err != nil {
 		return err
 	}
 
-	// build context
-	context := newCtx(ctx, cmd, args[j:i])
+	// build the context that goes through the entire program
+	context := &ctx{
+		Context: x,
+		cmd:     cmd,
+		pos:     args[i : i+offset],
+	}
 
-	// run interceptor
+	// run interceptor if provided
 	if c.Intercept != nil {
 		if err := c.Intercept(context); err != nil {
 			return err
 		}
 	}
 
-	// execute action
+	// execute the user defined function
 	return cmd.Run(context)
 }
 
@@ -83,18 +87,34 @@ func (c *Cmd) Register(cmd *Cmd) {
 	c.cmds = append(c.cmds, cmd)
 }
 
-func (c *Cmd) find(names []string, i int) *Cmd {
-	if len(names) == i {
-		return c
-	}
-	for _, cmd := range c.cmds {
-		if cmd.Name == names[i] {
-			if c := cmd.find(names, i+1); c != nil {
-				return c
+// finds the subcommand matching the given arguments from top-down.
+func find(root *Cmd, args []string, help bool) (found *Cmd, offset int) {
+	i := 0
+	n := len(args)
+	// use a dummy node to normalize the searching process.
+	next := &Cmd{cmds: []*Cmd{root}}
+
+search:
+	for _, cmd := range next.cmds {
+		if cmd.Name == args[i] || cmd.Wildcard {
+			found = cmd
+			offset = len(cmd.Pos)
+			// see if we exceed the given arguments.
+			if offset >= n-i {
+				return nil, 0
 			}
+			// we got no position argument to skip if
+			// only with the help flag.
+			if !help {
+				i += offset
+			}
+			i++
+			next = found
+			// but this is damn fast!
+			goto search
 		}
 	}
-	return nil
+	return
 }
 
 func (c *Cmd) validate() error {
@@ -123,7 +143,7 @@ func (c *Cmd) help(w io.Writer) error {
 		fmt.Fprint(tw, " <command>")
 	}
 
-	for _, arg := range c.Args {
+	for _, arg := range c.Pos {
 		fmt.Fprintf(tw, " <%s>", arg)
 	}
 
@@ -212,5 +232,5 @@ func seperate(args []string) (int, bool) {
 			return i, help
 		}
 	}
-	return len(args), help
+	return len(args) - 1, help
 }

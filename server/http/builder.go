@@ -7,21 +7,36 @@ import (
 	"github.com/moobu/moo/builder"
 )
 
+type BuildArgs struct {
+	Source  *builder.Source
+	Options *builder.BuildOptions
+}
+
+type ReleaseArgs struct {
+	Bundle  *builder.Bundle
+	Options *builder.ReleaseOptions
+}
+
+type CleanArgs struct {
+	Bundle  *builder.Bundle
+	Options *builder.CleanOptions
+}
+
 func Build(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
-	source := &builder.Source{}
+	args := &BuildArgs{}
 	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(source); err != nil {
+	if err := dec.Decode(args); err != nil {
 		WriteJSON(w, nil, err)
 		return
 	}
 	defer r.Body.Close()
 
-	bundle, err := builder.Build(source)
+	bundle, err := builder.Build(args.Source)
 	WriteJSON(w, bundle, err)
 }
 
@@ -31,15 +46,15 @@ func Release(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bundle := builder.Bundle{}
+	args := ReleaseArgs{}
 	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(&bundle); err != nil {
+	if err := dec.Decode(&args); err != nil {
 		WriteJSON(w, nil, err)
 		return
 	}
 	defer r.Body.Close()
 
-	err := builder.Release(&bundle)
+	err := builder.Release(args.Bundle)
 	WriteJSON(w, nil, err)
 }
 
@@ -49,14 +64,14 @@ func Clean(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bundle := builder.Bundle{}
+	args := CleanArgs{}
 	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(&bundle); err != nil {
+	if err := dec.Decode(&args); err != nil {
 		WriteJSON(w, nil, err)
 		return
 	}
 	defer r.Body.Close()
 
-	err := builder.Clean(&bundle)
+	err := builder.Clean(args.Bundle)
 	WriteJSON(w, nil, err)
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/moobu/moo/runtime"
 )
 
-type creArgs struct {
+type CreateArgs struct {
 	Pod     *runtime.Pod
 	Options *runtime.CreateOptions
 }
@@ -18,7 +18,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	args := &creArgs{}
+	args := &CreateArgs{}
 	dec := json.NewDecoder(r.Body)
 	if err := dec.Decode(args); err != nil {
 		WriteJSON(w, nil, err)
@@ -39,7 +39,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, nil, err)
 }
 
-type delArgs struct {
+type DeleteArgs struct {
 	Pod     *runtime.Pod
 	Options *runtime.DeleteOptions
 }
@@ -50,7 +50,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	args := &delArgs{}
+	args := &DeleteArgs{}
 	dec := json.NewDecoder(r.Body)
 	if err := dec.Decode(args); err != nil {
 		WriteJSON(w, nil, err)

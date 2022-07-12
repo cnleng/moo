@@ -4,7 +4,8 @@ import "context"
 
 type Ctx interface {
 	context.Context
-	Args() []string
+	// Pos returns the position arguments
+	Pos() []string
 	Flag(string) Flag
 	Bool(string) bool
 	Int(string) int
@@ -19,18 +20,14 @@ type Ctx interface {
 	Map(string) map[string]interface{}
 }
 
-func newCtx(c context.Context, cmd *Cmd, args []string) Ctx {
-	return &ctx{cmd: cmd, args: args, Context: c}
-}
-
 type ctx struct {
 	context.Context
-	cmd  *Cmd
-	args []string
+	cmd *Cmd
+	pos []string
 }
 
-func (c *ctx) Args() []string {
-	return c.args
+func (c *ctx) Pos() []string {
+	return c.pos
 }
 
 func (c *ctx) Flag(key string) Flag {

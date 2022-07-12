@@ -14,9 +14,10 @@ import (
 )
 
 var cmd = &cli.Cmd{
-	Name:    "moo",
-	Help:    "A pluggable serverless engine",
-	Version: "v0.0.1",
+	Name:     "moo",
+	Help:     "A pluggable serverless engine",
+	Version:  "v0.0.1",
+	Wildcard: true,
 }
 
 func Run() error {
