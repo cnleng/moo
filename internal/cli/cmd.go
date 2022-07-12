@@ -36,10 +36,15 @@ func (c *Cmd) Init() {
 
 func (c *Cmd) RunCtx(ctx context.Context) error {
 	args := os.Args[1:]
-	i := seperate(args)
+	i, help := seperate(args)
+	// see if we need to strip out the position argument
+	j := i
+	if !help {
+		j -= len(c.Args) + 1
+	}
 
 	// find command
-	cmd := c.find(args[:i], 0)
+	cmd := c.find(args[:j], 0)
 	if cmd == nil {
 		return errors.New("no such command")
 	}
@@ -48,20 +53,20 @@ func (c *Cmd) RunCtx(ctx context.Context) error {
 		return cmd.help(os.Stdout)
 	}
 
-	// parse options
+	// parse flags
 	if i < len(args) {
 		if err := cmd.set.Parse(args[i:]); err != nil {
 			return err
 		}
 	}
 
-	// validate options
+	// validate flags
 	if err := cmd.validate(); err != nil {
 		return err
 	}
 
 	// build context
-	context := newCtx(ctx, cmd, args[i-len(cmd.Args):i])
+	context := newCtx(ctx, cmd, args[j:i])
 
 	// run interceptor
 	if c.Intercept != nil {
@@ -82,15 +87,13 @@ func (c *Cmd) find(names []string, i int) *Cmd {
 	if len(names) == i {
 		return c
 	}
-
 	for _, cmd := range c.cmds {
 		if cmd.Name == names[i] {
-			if c := cmd.find(names, len(cmd.Args)+i+1); c != nil {
+			if c := cmd.find(names, i+1); c != nil {
 				return c
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -116,7 +119,7 @@ func (c *Cmd) help(w io.Writer) error {
 	}
 	fmt.Fprintf(tw, "USAGE:\n\t%s%s%s", c.parent, sep, c.Name)
 
-	if c.cmds != nil {
+	if len(c.cmds) > 0 {
 		fmt.Fprint(tw, " <command>")
 	}
 
@@ -124,11 +127,7 @@ func (c *Cmd) help(w io.Writer) error {
 		fmt.Fprintf(tw, " <%s>", arg)
 	}
 
-	if c.Flags != nil {
-		fmt.Fprint(tw, " [options...]\n")
-	} else {
-		fmt.Fprint(tw, " --help\n")
-	}
+	fmt.Fprint(tw, " [options...]\n")
 
 	if c.cmds != nil {
 		fmt.Fprint(tw, "\nCOMMANDS:\n")
@@ -148,12 +147,13 @@ func (c *Cmd) help(w io.Writer) error {
 }
 
 func (c *Cmd) init(parent string, root *Cmd, globalFlags []Flag) {
+	set := flag.NewFlagSet(c.Name, flag.ExitOnError)
+
 	if c.Flags != nil {
 		sort.Slice(c.Flags, func(i, j int) bool {
 			return c.Flags[i].Key() < c.Flags[j].Key()
 		})
 
-		set := flag.NewFlagSet(c.Name, flag.ExitOnError)
 		for _, flag := range c.Flags {
 			switch f := flag.(type) {
 			case *BoolFlag:
@@ -184,12 +184,13 @@ func (c *Cmd) init(parent string, root *Cmd, globalFlags []Flag) {
 				fmt.Printf("unsupported flag %s, ignored\n", f)
 			}
 		}
-		set.Usage = func() {
-			c.help(os.Stdout)
-		}
-		c.set = set
+
 	}
 
+	set.Usage = func() {
+		c.help(os.Stdout)
+	}
+	c.set = set
 	c.parent = parent
 
 	for _, cmd := range c.cmds {
@@ -198,11 +199,18 @@ func (c *Cmd) init(parent string, root *Cmd, globalFlags []Flag) {
 	}
 }
 
-func seperate(args []string) int {
+func seperate(args []string) (int, bool) {
+	var help bool
 	for i, arg := range args {
 		if arg[0] == '-' {
-			return i
+			switch arg[1] {
+			case '-':
+				help = arg[2:] == "help"
+			case 'h':
+				help = true
+			}
+			return i, help
 		}
 	}
-	return len(args)
+	return len(args), help
 }

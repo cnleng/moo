@@ -12,6 +12,7 @@ import (
 	"github.com/moobu/moo/gateway"
 	proxy "github.com/moobu/moo/gateway/http"
 	"github.com/moobu/moo/internal/cli"
+	"github.com/moobu/moo/router"
 )
 
 func init() {
@@ -52,7 +53,7 @@ func Gateway(c cli.Ctx) error {
 	if err != nil {
 		return err
 	}
-
+	addr := ln.Addr().String()
 	gw := gateway.New()
 	errCh := make(chan error, 1)
 	sigCh := make(chan os.Signal, 1)
@@ -69,7 +70,13 @@ func Gateway(c cli.Ctx) error {
 	client := http.New(client.Server(server))
 	gw.Handle(proxy.New(gateway.Router(client)))
 
-	log.Printf("[INFO] gateway started at %s", ln.Addr())
+	// register the gateway itself
+	route := &router.Route{Pod: "/moo/gateway", Address: addr, Protocol: "http"}
+	if err := client.Register(route); err != nil {
+		return err
+	}
+
+	log.Printf("[INFO] gateway started at %s", addr)
 	select {
 	case err := <-errCh:
 		return err
