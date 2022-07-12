@@ -1,13 +1,15 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/moobu/moo/cmd"
 )
 
 func main() {
-	if err := cmd.Run(); err != nil {
+	ctx := context.Background()
+	if err := cmd.RunCtx(ctx); err != nil {
 		log.Fatal(err)
 	}
 }

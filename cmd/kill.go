@@ -5,8 +5,8 @@ import "github.com/moobu/moo/internal/cli"
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "kill",
-		Help: "Kill one or more pods",
-		Run:  List,
+		Help: "kill one or more pods",
+		Run:  Kill,
 	})
 }
 

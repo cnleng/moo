@@ -13,7 +13,12 @@ import (
 	"github.com/moobu/moo/internal/cli"
 )
 
-const defaultServerAddr = "127.0.0.1:11451"
+const (
+	defaultGatewayPort  = 80
+	defaultServerPort   = 11451
+	defaultServerAddr   = "127.0.0.1:11451"
+	defaultServerPreset = "local"
+)
 
 var cmd = &cli.Cmd{
 	Name:     "moo",
@@ -22,9 +27,9 @@ var cmd = &cli.Cmd{
 	Wildcard: true,
 }
 
-func Run() error {
+func RunCtx(c context.Context) error {
 	cmd.Init()
-	return cmd.RunCtx(context.Background())
+	return cmd.RunCtx(c)
 }
 
 func listen(c cli.Ctx, uds bool) (net.Listener, error) {

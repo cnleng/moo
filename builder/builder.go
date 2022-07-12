@@ -14,6 +14,7 @@ type Source struct {
 type Bundle struct {
 	Type   string
 	Binary string
+	Sum    string
 	Source *Source
 }
 

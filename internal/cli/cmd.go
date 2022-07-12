@@ -18,6 +18,7 @@ type Cmd struct {
 	Name     string
 	Help     string
 	Version  string
+	Example  string
 	Wildcard bool
 	Pos      []string
 	Flags    []Flag
@@ -130,14 +131,14 @@ func (c *Cmd) help(w io.Writer) error {
 	tw := tabwriter.NewWriter(w, 0, 8, 1, '\t', tabwriter.AlignRight)
 
 	if len(c.Help) != 0 {
-		fmt.Fprintf(tw, "NAME:\n\t%s %s\n\n", c.Help, c.Version)
+		fmt.Fprintf(tw, "About:\n    %s %s\n\n", c.Help, c.Version)
 	}
 
 	sep := ""
 	if len(c.parent) > 0 {
 		sep = " "
 	}
-	fmt.Fprintf(tw, "USAGE:\n\t%s%s%s", c.parent, sep, c.Name)
+	fmt.Fprintf(tw, "Usage:\n    %s%s%s", c.parent, sep, c.Name)
 
 	if len(c.cmds) > 0 {
 		fmt.Fprint(tw, " <command>")
@@ -149,17 +150,21 @@ func (c *Cmd) help(w io.Writer) error {
 
 	fmt.Fprint(tw, " [options...]\n")
 
+	if len(c.Example) > 0 {
+		fmt.Fprintf(tw, "\nExamples:\n    %s\n", c.Example)
+	}
+
 	if c.cmds != nil {
-		fmt.Fprint(tw, "\nCOMMANDS:\n")
+		fmt.Fprint(tw, "\nCommands:\n")
 		for _, cmd := range c.cmds {
-			fmt.Fprintf(tw, "\t%s\t%s\n", cmd.Name, cmd.Help)
+			fmt.Fprintf(tw, "    %s\t%s\n", cmd.Name, cmd.Help)
 		}
 	}
 
 	if c.Flags != nil {
-		fmt.Fprint(tw, "\nOPTIONS:\n")
+		fmt.Fprint(tw, "\nOptions:\n")
 		for _, flag := range c.Flags {
-			fmt.Fprintf(tw, "\t--%s\t%s\t(default %v) \n", flag.Key(), flag.Help(), flag.Var())
+			fmt.Fprintf(tw, "    --%s\t%s\t(default %v) \n", flag.Key(), flag.Help(), flag.Var())
 		}
 	}
 

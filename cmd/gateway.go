@@ -18,31 +18,30 @@ import (
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "gateway",
-		Help: "Run the API gateway",
+		Help: "run the API gateway",
 		Run:  Gateway,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "server",
-				Usage: "Address of the server",
-				Value: "127.0.0.1:11451",
+				Usage: "address of the server",
+				Value: defaultServerAddr,
 			},
 			&cli.IntFlag{
 				Name:  "port",
-				Usage: "Port the gateway listens on",
-				Value: 8080, // default gateway port
+				Usage: "port the gateway listens on",
+				Value: defaultGatewayPort,
 			},
 			&cli.BoolFlag{
 				Name:  "secure",
-				Usage: "Use TLS",
-				Value: false,
+				Usage: "enable TLS",
 			},
 			&cli.StringFlag{
 				Name:  "cert",
-				Usage: "TLS cert file",
+				Usage: "path to TLS certificate",
 			},
 			&cli.StringFlag{
 				Name:  "key",
-				Usage: "TLS key file",
+				Usage: "path to TLS public key",
 			},
 		},
 	})

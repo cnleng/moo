@@ -17,28 +17,26 @@ import (
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "server",
-		Help: "Run the server",
+		Help: "run the server",
 		Run:  Server,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "preset",
-				Usage: "Presets initializing the server",
-				Value: "local", // default preset
+				Usage: "preset initializing the server",
+				Value: defaultServerPreset,
 			},
 			&cli.IntFlag{
 				Name:  "port",
 				Usage: "Port the server listens on",
-				Value: 11451, // default port
+				Value: defaultServerPort,
 			},
 			&cli.BoolFlag{
 				Name:  "uds",
-				Usage: "Use unix domain socket address",
-				Value: false,
+				Usage: "enable unix domain socket",
 			},
 			&cli.BoolFlag{
 				Name:  "gateway",
-				Usage: "Starts the API gateway",
-				Value: false,
+				Usage: "enable the API gateway",
 			},
 		},
 	})

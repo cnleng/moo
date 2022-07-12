@@ -5,18 +5,17 @@ import "github.com/moobu/moo/internal/cli"
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name: "ps",
-		Help: "List running pods",
+		Help: "list running pods",
 		Run:  List,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "ns",
-				Usage: "Filter by namespace",
+				Usage: "filter by namespace",
 				Value: "moo",
 			},
 			&cli.BoolFlag{
 				Name:  "all",
-				Usage: "List all",
-				Value: false,
+				Usage: "list all",
 			},
 		},
 	})

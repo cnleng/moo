@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/moobu/moo/client"
 	"github.com/moobu/moo/client/http"
 	"github.com/moobu/moo/internal/cli"
@@ -11,46 +9,50 @@ import (
 
 func init() {
 	cmd.Register(&cli.Cmd{
-		Name: "deploy",
-		Help: "Deploy a pod",
+		Name: "run",
+		Help: "run a pod",
 		Pos:  []string{"source"},
-		Run:  Deploy,
+		Run:  Run,
 		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:  "bin",
+				Usage: "binary to be executed",
+			},
 			&cli.IntFlag{
 				Name:  "replicas",
-				Usage: "Replicas to deploy",
+				Usage: "replicas to be deployed",
 				Value: 1,
 			},
 			&cli.BoolFlag{
 				Name:  "gpu",
-				Usage: "Enable GPU support",
-				Value: false,
+				Usage: "enable GPU support",
 			},
 			&cli.BoolFlag{
 				Name:  "output",
-				Usage: "Enable output to stdout",
+				Usage: "enable output to stdout",
 				Value: true,
 			},
 			&cli.StringSliceFlag{
 				Name:  "env",
-				Usage: "Env variables passing in",
+				Usage: "environment variables to run with",
 			},
 			&cli.StringSliceFlag{
 				Name:  "arg",
-				Usage: "Arguments passing in",
+				Usage: "arguments to run with",
 			},
 			&cli.StringFlag{
 				Name:  "server",
-				Usage: "Address of the server",
+				Usage: "address of the server",
 				Value: defaultServerAddr,
 			},
 		},
 	})
 }
 
-func Deploy(c cli.Ctx) error {
-	source := c.Pos()[0]
-	fmt.Println(source)
+func Run(c cli.Ctx) error {
+	// source := c.Pos()[0]
+	// bin := c.String("bin")
+
 	cli := http.New(client.Server(c.String("server")))
 	cli.Create(&runtime.Pod{})
 	return nil
