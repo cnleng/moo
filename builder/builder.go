@@ -12,7 +12,7 @@ type Builder interface {
 }
 
 type Retriever interface {
-	// Retrieve retrieves a source normally a git repository
+	// Retrieve retrieves a source typically a git repository
 	// from remote platforms like GitHub.
 	Retrieve(string) (*Source, error)
 }
@@ -25,8 +25,8 @@ type Source struct {
 
 type Bundle struct {
 	Type   string
-	Binary string
 	Ref    string
+	Binary string
 	Source *Source
 }
 

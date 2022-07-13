@@ -15,7 +15,7 @@ type realBuildResponse struct {
 	Content *builder.Bundle
 }
 
-func (h *http) Build(s *builder.Retriever, opts ...builder.BuildOption) (*builder.Bundle, error) {
+func (h *http) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bundle, error) {
 	var options builder.BuildOptions
 	for _, o := range opts {
 		o(&options)
@@ -42,26 +42,6 @@ func (h *http) Build(s *builder.Retriever, opts ...builder.BuildOption) (*builde
 		return nil, err
 	}
 	return retval.Content, errors.New(retval.Error)
-}
-
-func (h *http) Release(b *builder.Bundle, opts ...builder.ReleaseOption) error {
-	var options builder.ReleaseOptions
-	for _, o := range opts {
-		o(&options)
-	}
-
-	args := server.ReleaseArgs{Bundle: b, Options: &options}
-	url := fmt.Sprintf("http://%s/release", h.options.Server)
-
-	reader := buffer.Get()
-	defer buffer.Put(reader)
-
-	encoder := json.NewEncoder(reader)
-	if err := encoder.Encode(args); err != nil {
-		return err
-	}
-	_, err := h.client.Post(url, contentType, reader)
-	return err
 }
 
 func (h *http) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {

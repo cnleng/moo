@@ -11,26 +11,27 @@ type Options struct{}
 type Option func(*Options)
 
 type CreateOptions struct {
-	Args      []string
-	Env       []string
 	Bundle    *builder.Bundle
 	Output    io.Writer
+	Env       []string
+	Args      []string
 	Image     string
 	Namespace string
 	Replicas  int
+	GPU       bool
 }
 
 type CreateOption func(*CreateOptions)
 
-func Args(args ...string) CreateOption {
-	return func(o *CreateOptions) {
-		o.Args = args
-	}
-}
-
 func Env(env ...string) CreateOption {
 	return func(o *CreateOptions) {
 		o.Env = env
+	}
+}
+
+func Args(args ...string) CreateOption {
+	return func(o *CreateOptions) {
+		o.Args = args
 	}
 }
 
@@ -49,6 +50,12 @@ func Output(w io.Writer) CreateOption {
 func Image(name string) CreateOption {
 	return func(o *CreateOptions) {
 		o.Image = name
+	}
+}
+
+func GPU(enable bool) CreateOption {
+	return func(o *CreateOptions) {
+		o.GPU = enable
 	}
 }
 

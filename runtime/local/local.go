@@ -48,7 +48,7 @@ func (l *local) Create(pod *runtime.Pod, opts ...runtime.CreateOption) error {
 		},
 	}
 
-	if err := lpod.restartIfDead(); err != nil {
+	if err := lpod.start(); err != nil {
 		return err
 	}
 	l.pods[ns][key] = lpod

@@ -6,7 +6,8 @@ import (
 )
 
 type Options struct {
-	Output io.Writer
+	Retriever Retriever
+	Output    io.Writer
 }
 
 type Option func(*Options)
