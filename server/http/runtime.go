@@ -18,14 +18,15 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	args := &CreateArgs{}
+	args := CreateArgs{}
 	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(args); err != nil {
-		WriteJSON(w, nil, err)
+	if err := dec.Decode(&args); err != nil {
+		writeJSON(w, nil, err)
 		return
 	}
 	defer r.Body.Close()
 
+	// TODO: create a file for this session to output the log to
 	options := args.Options
 	opts := []runtime.CreateOption{
 		runtime.Args(options.Args...),
@@ -33,10 +34,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		runtime.Image(options.Image),
 		runtime.Replicas(options.Replicas),
 		runtime.Bundle(options.Bundle),
+		runtime.GPU(options.GPU),
 		runtime.CreateWithNamespace(options.Namespace),
 	}
 	err := runtime.Create(args.Pod, opts...)
-	WriteJSON(w, nil, err)
+	writeJSON(w, nil, err)
 }
 
 type DeleteArgs struct {
@@ -53,14 +55,14 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	args := &DeleteArgs{}
 	dec := json.NewDecoder(r.Body)
 	if err := dec.Decode(args); err != nil {
-		WriteJSON(w, nil, err)
+		writeJSON(w, nil, err)
 		return
 	}
 	defer r.Body.Close()
 
 	options := args.Options
 	err := runtime.Delete(args.Pod, runtime.DeleteWithNamespace(options.Namespace))
-	WriteJSON(w, nil, err)
+	writeJSON(w, nil, err)
 }
 
 func List(w http.ResponseWriter, r *http.Request) {
@@ -72,7 +74,7 @@ func List(w http.ResponseWriter, r *http.Request) {
 	options := runtime.ListOptions{}
 	dec := json.NewDecoder(r.Body)
 	if err := dec.Decode(&options); err != nil {
-		WriteJSON(w, nil, err)
+		writeJSON(w, nil, err)
 		return
 	}
 	defer r.Body.Close()
@@ -83,5 +85,5 @@ func List(w http.ResponseWriter, r *http.Request) {
 		runtime.ListWithNamespace(options.Namespace),
 	}
 	pods, err := runtime.List(opts...)
-	WriteJSON(w, pods, err)
+	writeJSON(w, pods, err)
 }

@@ -40,16 +40,24 @@ func New(opts ...server.Option) server.Server {
 	return &httpServer{options: options}
 }
 
-func WriteJSON(w http.ResponseWriter, v any, err error) error {
-	w.Header().Set("Content-Type", "application/json")
-	errmsg := ""
+const headerError = "X-Moo-Error"
+
+func writeJSON(w http.ResponseWriter, v any, err error) {
+	header := w.Header()
+	header.Set("Content-Type", "application/json")
 	if err != nil {
-		errmsg = err.Error()
+		header.Set(headerError, err.Error())
+		return
 	}
-	return json.NewEncoder(w).Encode(Args{errmsg, v})
+	b, err := json.Marshal(Args{Value: v})
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		header.Set(headerError, err.Error())
+		return
+	}
+	w.Write(b)
 }
 
 type Args struct {
-	Error   string
-	Content any
+	Value any
 }

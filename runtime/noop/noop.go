@@ -3,6 +3,7 @@ package noop
 import (
 	"errors"
 	"sync"
+	"time"
 
 	"github.com/moobu/moo/runtime"
 )
@@ -35,6 +36,8 @@ func (n *noop) Create(pod *runtime.Pod, opts ...runtime.CreateOption) error {
 	}
 
 	pod.Status(runtime.Running, nil)
+	pod.Metadata["started"] = time.Now().Format(time.RFC3339)
+	pod.Metadata["source"] = options.Bundle.Source.Remote
 	n.pods[ns][key] = pod
 	return nil
 }

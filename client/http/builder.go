@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/moobu/moo/builder"
@@ -11,8 +10,7 @@ import (
 )
 
 type realBuildResponse struct {
-	Error   string
-	Content *builder.Bundle
+	Value *builder.Bundle
 }
 
 func (h *http) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bundle, error) {
@@ -20,28 +18,29 @@ func (h *http) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.B
 	for _, o := range opts {
 		o(&options)
 	}
-	args := server.BuildArgs{Source: s, Options: &options}
-	url := fmt.Sprintf("http://%s/build", h.options.Server)
 
+	url := fmt.Sprintf("http://%s/build", h.options.Server)
 	reader := buffer.Get()
 	defer buffer.Put(reader)
 
-	encoder := json.NewEncoder(reader)
-	if err := encoder.Encode(args); err != nil {
+	args := server.BuildArgs{Source: s, Options: &options}
+	enc := json.NewEncoder(reader)
+	if err := enc.Encode(args); err != nil {
 		return nil, err
 	}
 
-	res, err := h.client.Post(url, contentType, reader)
+	body, err := h.invoke("POST", url, reader)
 	if err != nil {
 		return nil, err
 	}
+	defer body.Close()
 
-	retval := &realBuildResponse{}
-	decoder := json.NewDecoder(res.Body)
-	if err := decoder.Decode(retval); err != nil {
+	res := realBuildResponse{}
+	dec := json.NewDecoder(body)
+	if err := dec.Decode(&res); err != nil {
 		return nil, err
 	}
-	return retval.Content, errors.New(retval.Error)
+	return res.Value, nil
 }
 
 func (h *http) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {
@@ -60,6 +59,6 @@ func (h *http) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {
 	if err := encoder.Encode(args); err != nil {
 		return err
 	}
-	_, err := h.client.Post(url, contentType, reader)
+	_, err := h.invoke("POST", url, reader)
 	return err
 }

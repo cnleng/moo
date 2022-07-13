@@ -12,7 +12,7 @@ type Option func(*Options)
 
 type CreateOptions struct {
 	Bundle    *builder.Bundle
-	Output    io.Writer
+	Output    io.Writer `json:"-"`
 	Env       []string
 	Args      []string
 	Image     string

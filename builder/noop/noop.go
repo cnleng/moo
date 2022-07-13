@@ -7,10 +7,13 @@ type noop struct {
 }
 
 func (n noop) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bundle, error) {
+	var options builder.BuildOptions
+	for _, o := range opts {
+		o(&options)
+	}
 	return &builder.Bundle{
 		Type:   "test",
-		Ref:    "latest",
-		Binary: "",
+		Ref:    options.Ref,
 		Source: s,
 	}, nil
 }

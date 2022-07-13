@@ -38,6 +38,10 @@ func init() {
 				Name:  "gateway",
 				Usage: "enable the API gateway",
 			},
+			&cli.BoolFlag{
+				Name:  "secure",
+				Usage: "enable TLS",
+			},
 		},
 	})
 }
@@ -69,9 +73,9 @@ func Server(c cli.Ctx) error {
 	// see if we need to initiate the API geteway
 	if c.Bool("gateway") {
 		bin := os.Args[0]
-		err := runtime.Default.Create(&runtime.Pod{Name: "gateway"},
-			runtime.CreateWithNamespace("moo"),
-			runtime.Bundle(&builder.Bundle{Binary: bin}),
+		err := runtime.Default.Create(&runtime.Pod{Name: "gateway", Tag: "latest"},
+			runtime.CreateWithNamespace("default"),
+			runtime.Bundle(&builder.Bundle{Binary: bin, Source: &builder.Source{Remote: "internal"}}),
 			runtime.Args("gateway", "--server", addr),
 			runtime.Output(os.Stdout))
 		if err != nil {

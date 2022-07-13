@@ -23,16 +23,16 @@ func Build(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	args := &BuildArgs{}
+	args := BuildArgs{}
 	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(args); err != nil {
-		WriteJSON(w, nil, err)
+	if err := dec.Decode(&args); err != nil {
+		writeJSON(w, nil, err)
 		return
 	}
 	defer r.Body.Close()
 
 	bundle, err := builder.Build(args.Source)
-	WriteJSON(w, bundle, err)
+	writeJSON(w, bundle, err)
 }
 
 func Clean(w http.ResponseWriter, r *http.Request) {
@@ -44,11 +44,11 @@ func Clean(w http.ResponseWriter, r *http.Request) {
 	args := CleanArgs{}
 	dec := json.NewDecoder(r.Body)
 	if err := dec.Decode(&args); err != nil {
-		WriteJSON(w, nil, err)
+		writeJSON(w, nil, err)
 		return
 	}
 	defer r.Body.Close()
 
 	err := builder.Clean(args.Bundle)
-	WriteJSON(w, nil, err)
+	writeJSON(w, nil, err)
 }

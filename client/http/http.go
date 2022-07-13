@@ -1,12 +1,13 @@
 package http
 
 import (
+	"errors"
+	"fmt"
+	"io"
 	std "net/http"
 
 	"github.com/moobu/moo/client"
 )
-
-const contentType = "application/json"
 
 type http struct {
 	options client.Options
@@ -22,4 +23,24 @@ func New(opts ...client.Option) client.Client {
 		options: options,
 		client:  &std.Client{},
 	}
+}
+
+// this is when HTTP sucks!
+func (h *http) invoke(method, url string, body io.Reader) (io.ReadCloser, error) {
+	req, err := std.NewRequest(method, url, body)
+	if err != nil {
+		return nil, err
+	}
+	res, err := h.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode != std.StatusOK {
+		return nil, fmt.Errorf("Moo server responded with status %d", res.StatusCode)
+	}
+	merr := res.Header.Get("X-Moo-Error")
+	if len(merr) > 0 {
+		return nil, errors.New(merr)
+	}
+	return res.Body, nil
 }

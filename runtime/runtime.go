@@ -48,9 +48,9 @@ const (
 )
 
 var StatusText = [...]string{
-	"PENDING",
-	"RUNNING",
-	"EXITED",
+	"pendding",
+	"running",
+	"exited",
 }
 
 var Default Runtime

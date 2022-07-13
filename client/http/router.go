@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/moobu/moo/internal/pool/buffer"
@@ -19,7 +18,7 @@ func (h *http) Register(route *router.Route) error {
 	if err := encoder.Encode(route); err != nil {
 		return err
 	}
-	_, err := h.client.Post(url, contentType, reader)
+	_, err := h.invoke("POST", url, reader)
 	return err
 }
 
@@ -33,7 +32,7 @@ func (h *http) Deregister(route *router.Route) error {
 	if err := encoder.Encode(route); err != nil {
 		return err
 	}
-	_, err := h.client.Post(url, contentType, reader)
+	_, err := h.invoke("POST", url, reader)
 	return err
 }
 
@@ -48,28 +47,20 @@ func (h *http) Lookup(pod string) ([]*router.Route, error) {
 	if err := encoder.Encode(route); err != nil {
 		return nil, err
 	}
-	res, err := h.client.Post(url, contentType, reader)
+	body, err := h.invoke("POST", url, reader)
 	if err != nil {
 		return nil, err
 	}
-	if res.StatusCode == 404 {
-		return nil, router.ErrNotFound
-	}
+	defer body.Close()
 
 	retval := &realLookupResponse{}
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.NewDecoder(body)
 	if err := decoder.Decode(retval); err != nil {
 		return nil, err
 	}
-	defer res.Body.Close()
-	// This is when HTTP sucks!
-	if len(retval.Error) > 0 {
-		return nil, errors.New(retval.Error)
-	}
-	return retval.Content, nil
+	return retval.Value, nil
 }
 
 type realLookupResponse struct {
-	Error   string
-	Content []*router.Route
+	Value []*router.Route
 }

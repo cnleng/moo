@@ -3,6 +3,7 @@ package local
 import (
 	"io"
 	"sync"
+	"time"
 
 	"github.com/moobu/moo/runtime"
 	"github.com/moobu/moo/runtime/local/driver"
@@ -51,12 +52,15 @@ func (p *lpod) start() (err error) {
 	if err != nil {
 		return
 	}
+
 	p.Status(runtime.Running, nil)
+	p.Metadata["started"] = time.Now().Format(time.RFC3339)
+	p.running = true
+	p.wg.Add(1)
+
 	if p.output != nil {
 		p.stream()
 	}
-	p.running = true
-	p.wg.Add(1)
 	go p.wait()
 	return nil
 }

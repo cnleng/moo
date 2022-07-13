@@ -52,6 +52,10 @@ func init() {
 				Usage: "address of Moo server",
 				Value: defaultServerAddr,
 			},
+			&cli.StringFlag{
+				Name:  "image",
+				Usage: "specify an image to run",
+			},
 		},
 	})
 }
@@ -66,6 +70,7 @@ func Run(c cli.Ctx) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println(rawURL)
 	// use the base name of the source if no name is given.
 	name := c.String("name")
 	if len(name) == 0 {
@@ -75,8 +80,8 @@ func Run(c cli.Ctx) error {
 	// pod if a reference is specified.
 	tag := "latest"
 	ref := c.String("ref")
-	if len(ref) == 0 {
-		ref = tag
+	if len(ref) > 0 {
+		tag = ref
 	}
 	source := &builder.Source{
 		Name:   name,
@@ -88,6 +93,7 @@ func Run(c cli.Ctx) error {
 	if err != nil {
 		return err
 	}
+	fmt.Printf("%#v\n", bundle.Source)
 	// specify the output
 	// TODO: use a default file on the machine running the CLI.
 	output := io.Discard
@@ -113,6 +119,6 @@ func Run(c cli.Ctx) error {
 	if err := cli.Create(pod, opts...); err != nil {
 		return err
 	}
-	fmt.Printf("successfully deployed.")
+	fmt.Printf("Successfully deployed\n")
 	return nil
 }

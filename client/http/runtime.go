@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/moobu/moo/internal/pool/buffer"
@@ -19,12 +18,13 @@ func (h *http) Create(pod *runtime.Pod, opts ...runtime.CreateOption) error {
 	url := fmt.Sprintf("http://%s/create", h.options.Server)
 	reader := buffer.Get()
 	defer buffer.Put(reader)
+
 	encoder := json.NewEncoder(reader)
-	args := &server.CreateArgs{}
-	if err := encoder.Encode(&args); err != nil {
+	args := server.CreateArgs{Pod: pod, Options: &options}
+	if err := encoder.Encode(args); err != nil {
 		return err
 	}
-	_, err := h.client.Post(url, contentType, reader)
+	_, err := h.invoke("POST", url, reader)
 	return err
 }
 
@@ -37,12 +37,13 @@ func (h *http) Delete(pod *runtime.Pod, opts ...runtime.DeleteOption) error {
 	url := fmt.Sprintf("http://%s/delete", h.options.Server)
 	reader := buffer.Get()
 	defer buffer.Put(reader)
+
 	encoder := json.NewEncoder(reader)
-	args := &server.DeleteArgs{}
-	if err := encoder.Encode(&args); err != nil {
+	args := server.DeleteArgs{Pod: pod, Options: &options}
+	if err := encoder.Encode(args); err != nil {
 		return err
 	}
-	_, err := h.client.Post(url, contentType, reader)
+	_, err := h.invoke("POST", url, reader)
 	return err
 }
 
@@ -55,29 +56,32 @@ func (h *http) List(opts ...runtime.ListOption) ([]*runtime.Pod, error) {
 	url := fmt.Sprintf("http://%s/list", h.options.Server)
 	reader := buffer.Get()
 	defer buffer.Put(reader)
+
 	encoder := json.NewEncoder(reader)
-	args := &runtime.ListOptions{}
-	if err := encoder.Encode(&args); err != nil {
+	if err := encoder.Encode(&options); err != nil {
 		return nil, err
 	}
-	res, err := h.client.Post(url, contentType, reader)
+
+	body, err := h.invoke("POST", url, reader)
 	if err != nil {
 		return nil, err
 	}
+	defer body.Close()
 
 	retval := &realListResponse{}
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.NewDecoder(body)
 	if err := decoder.Decode(retval); err != nil {
 		return nil, err
 	}
-	return retval.Content, errors.New(retval.Error)
+	return retval.Value, nil
 }
 
 type realListResponse struct {
-	Error   string
-	Content []*runtime.Pod
+	Value []*runtime.Pod
 }
 
+// the client implementation does not need the two methods below
+// so we just leave them empty.
 func (h *http) Start() error {
 	return nil
 }
