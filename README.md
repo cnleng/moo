@@ -1,6 +1,6 @@
 # m∞
 
-Moo (mɪnˈfɪnɪti) is an engine for running machine learning workflows locally or in a Kubernetes cluster. M stands for machine learning on which we are working and ∞ for nothing but being 🆒.
+Moo (mɪnˈfɪnɪti) is an engine for running processes locally or in a Kubernetes cluster. M stands for machine learning that we are currently working on and ∞ for nothing but being 🆒.
 
 ## Architecture
 
@@ -32,13 +32,13 @@ Since we build this for sharing machine learning model services, we need an entr
 
 ### Server
 
-Like the Kubernetes api-server, the Moo server handles all the internal requests that could be sent from a system administrator using the Moo CLI or from the *Moo Cloud* services which we will be talking about in the second phase in the near future. 
+Like the Kubernetes api-server, the Moo server handles all the internal requests that could be sent from a system administrator using the Moo CLI or from the *Moo Cloud* services which we will be talking about in the second stage in the near future. You can see what we are going to do from the [roadmap](#roadmap).
 
-What's amazing is that this is how the Moo gateway calls the Moo router to see where all those pods are. In other words, the Moo server is the only one that can directly call the components we've been talking about and also provides HTTP or RPC APIs to interact with the Moo engine for the outside world or other components of the engine itself like the Moo gateway. 
+What's amazing is that this is how the Moo gateway calls the Moo router to see where all those pods are. In other words, the Moo server is the only one that can directly call the components we've been talking about and also provides HTTP APIs to interact with the Moo engine for the outside world or other components of the engine itself like the Moo gateway. 
 
 ### Client
 
-The Moo Client is just an encapsulation of some HTTP calls to the Moo server that can be easily used to implement things like the Moo CLI or  some SDKs.
+The Moo Client is just an encapsulation of some HTTP calls to the Moo server that can be easily used to implement things like the Moo CLI or some SDKs. Note that the Moo client may not live on the same machine that the Moo server is running on, it's kind of a library used by other programs to communicate with the Moo engine.
 
 ### Preset
 
