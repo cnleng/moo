@@ -14,7 +14,7 @@ type raw struct{}
 func (raw) Fork(r *driver.Runnable) (*driver.Process, error) {
 	var dir string
 	if r.Bundle.Source != nil {
-		dir = r.Bundle.Source.Dir
+		dir = r.Bundle.Source.Local
 	}
 	cmd := exec.Command(r.Bundle.Binary, r.Args...)
 	cmd.Dir = dir

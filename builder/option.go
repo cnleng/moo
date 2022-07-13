@@ -6,17 +6,10 @@ import (
 )
 
 type Options struct {
-	Token  string
 	Output io.Writer
 }
 
 type Option func(*Options)
-
-func Token(token string) Option {
-	return func(o *Options) {
-		o.Token = token
-	}
-}
 
 func Output(w io.Writer) Option {
 	return func(o *Options) {
@@ -26,16 +19,10 @@ func Output(w io.Writer) Option {
 
 type BuildOptions struct {
 	Context context.Context
-	Deps    []string
+	Ref     string
 }
 
 type BuildOption func(*BuildOptions)
-
-func Deps(deps ...string) BuildOption {
-	return func(o *BuildOptions) {
-		o.Deps = deps
-	}
-}
 
 func BuildContext(c context.Context) BuildOption {
 	return func(o *BuildOptions) {
@@ -43,15 +30,9 @@ func BuildContext(c context.Context) BuildOption {
 	}
 }
 
-type ReleaseOptions struct {
-	Context context.Context
-}
-
-type ReleaseOption func(*ReleaseOptions)
-
-func ReleaseContext(c context.Context) ReleaseOption {
-	return func(o *ReleaseOptions) {
-		o.Context = c
+func Ref(ref string) BuildOption {
+	return func(o *BuildOptions) {
+		o.Ref = ref
 	}
 }
 

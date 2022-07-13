@@ -1,10 +1,6 @@
 package local
 
 import (
-	"os"
-
-	"github.com/moobu/moo/builder"
-	"github.com/moobu/moo/builder/conda"
 	"github.com/moobu/moo/internal/cli"
 	"github.com/moobu/moo/router"
 	"github.com/moobu/moo/router/memory"
@@ -19,7 +15,6 @@ type Presets struct{}
 
 func (Presets) Setup(c cli.Ctx) error {
 	runtime.Default = local.New(raw.New()) // TODO: use conda driver
-	builder.Default = conda.New(builder.Output(os.Stdout))
 	router.Default = memory.New()
 	server.Default = http.New()
 	return nil

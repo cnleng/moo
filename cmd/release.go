@@ -5,7 +5,7 @@ import "github.com/moobu/moo/internal/cli"
 func init() {
 	cmd.Register(&cli.Cmd{
 		Name:  "release",
-		Help:  "release a bundle",
+		About: "release a bundle",
 		Pos:   []string{"path"},
 		Run:   List,
 		Flags: []cli.Flag{},

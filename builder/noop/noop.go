@@ -7,11 +7,12 @@ type noop struct {
 }
 
 func (n noop) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bundle, error) {
-	return &builder.Bundle{}, nil
-}
-
-func (n noop) Release(b *builder.Bundle, opts ...builder.ReleaseOption) error {
-	return nil
+	return &builder.Bundle{
+		Type:   "test",
+		Ref:    "latest",
+		Binary: "",
+		Source: s,
+	}, nil
 }
 
 func (n noop) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {
@@ -23,7 +24,5 @@ func New(opts ...builder.Option) builder.Builder {
 	for _, o := range opts {
 		o(&options)
 	}
-	return &noop{
-		options: options,
-	}
+	return &noop{options: options}
 }

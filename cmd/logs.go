@@ -4,9 +4,9 @@ import "github.com/moobu/moo/internal/cli"
 
 func init() {
 	cmd.Register(&cli.Cmd{
-		Name: "logs",
-		Help: "output log file",
-		Run:  Logs,
+		Name:  "logs",
+		About: "output log file",
+		Run:   Logs,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
 				Name:  "watch",

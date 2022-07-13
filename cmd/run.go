@@ -9,14 +9,18 @@ import (
 
 func init() {
 	cmd.Register(&cli.Cmd{
-		Name: "run",
-		Help: "run a pod",
-		Pos:  []string{"source"},
-		Run:  Run,
+		Name:  "run",
+		About: "run a pod",
+		Pos:   []string{"source"},
+		Run:   Run,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:  "bin",
-				Usage: "binary to be executed",
+				Name:  "name",
+				Usage: "name of the source",
+			},
+			&cli.StringFlag{
+				Name:  "ref",
+				Usage: "reference of the source",
 			},
 			&cli.IntFlag{
 				Name:  "replicas",

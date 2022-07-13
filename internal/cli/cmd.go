@@ -16,8 +16,8 @@ type Intercept func(Ctx) error
 
 type Cmd struct {
 	Name     string
-	Help     string
 	Version  string
+	About    string
 	Example  string
 	Wildcard bool
 	Pos      []string
@@ -130,8 +130,8 @@ func (c *Cmd) validate() error {
 func (c *Cmd) help(w io.Writer) error {
 	tw := tabwriter.NewWriter(w, 0, 8, 1, '\t', tabwriter.AlignRight)
 
-	if len(c.Help) != 0 {
-		fmt.Fprintf(tw, "About:\n    %s %s\n\n", c.Help, c.Version)
+	if len(c.About) != 0 {
+		fmt.Fprintf(tw, "About:\n    %s %s\n\n", c.About, c.Version)
 	}
 
 	sep := ""
@@ -157,7 +157,7 @@ func (c *Cmd) help(w io.Writer) error {
 	if c.cmds != nil {
 		fmt.Fprint(tw, "\nCommands:\n")
 		for _, cmd := range c.cmds {
-			fmt.Fprintf(tw, "    %s\t%s\n", cmd.Name, cmd.Help)
+			fmt.Fprintf(tw, "    %s\t%s\n", cmd.Name, cmd.About)
 		}
 	}
 

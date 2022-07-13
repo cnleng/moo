@@ -17,9 +17,9 @@ import (
 
 func init() {
 	cmd.Register(&cli.Cmd{
-		Name: "gateway",
-		Help: "run the API gateway",
-		Run:  Gateway,
+		Name:  "gateway",
+		About: "run the API gateway",
+		Run:   Gateway,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "server",

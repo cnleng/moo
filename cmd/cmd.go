@@ -16,13 +16,13 @@ import (
 const (
 	defaultGatewayPort  = 80
 	defaultServerPort   = 11451
-	defaultServerAddr   = "127.0.0.1:11451"
+	defaultServerAddr   = "localhost:11451"
 	defaultServerPreset = "local"
 )
 
 var cmd = &cli.Cmd{
 	Name:     "moo",
-	Help:     "A pluggable serverless engine",
+	About:    "Moo is a serverless engine",
 	Version:  "v0.0.1",
 	Wildcard: true,
 }

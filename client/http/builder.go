@@ -15,7 +15,7 @@ type realBuildResponse struct {
 	Content *builder.Bundle
 }
 
-func (h *http) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bundle, error) {
+func (h *http) Build(s *builder.Retriever, opts ...builder.BuildOption) (*builder.Bundle, error) {
 	var options builder.BuildOptions
 	for _, o := range opts {
 		o(&options)

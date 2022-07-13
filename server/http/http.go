@@ -24,7 +24,6 @@ func (s *httpServer) Serve(l net.Listener) error {
 	mux.HandleFunc("/lookup", Lookup)
 	// builder
 	mux.HandleFunc("/build", Build)
-	mux.HandleFunc("/release", Release)
 	mux.HandleFunc("/clean", Clean)
 	return http.Serve(l, mux)
 }
