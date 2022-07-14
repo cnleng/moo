@@ -52,6 +52,7 @@ func listen(c cli.Ctx, uds bool) (net.Listener, error) {
 		return listener, nil
 	}
 
+	// TODO: generate the TLS config on our own if not provided
 	cert, key := c.String("cert"), c.String("key")
 	if len(cert) == 0 || len(key) == 0 {
 		return nil, errors.New("certificates not provided")

@@ -10,7 +10,11 @@ Here are some termiologies you need to know before diving in.
 
 ### Builder
 
-The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git repository like [GitHub](https://github.com). A bundle is an OCI image when Moo is running in a Kubernetes cluster, while in your local machine it stays unchanged but with dependencies installed in an isolated environment.
+The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git repository like [GitHub](https://github.com). There are several builders implemented for some programming languages of the day, such as Python, Julia and Go, the one that makes Moo come true. And there is also a high-level implementation of the builder which is called the mixed builder that can automatically select a builder for the source when being called.
+
+If Moo is running in your local machine and the programming language the source uses needs a virtual machine to execute it, for example, you are going to deploy a Python project, the builder, according to your choice, can either build it to an image using an OCI manager such as the [Podman](https://podman.io) or stay unchanged but with dependencies installed in an isolated environment.
+
+While in a Kubernetes cluster, the builder does nothing because you can only deploy pre-built images to the cluster, instead of the runtime-built ones, according to the current design of Moo.
 
 ### Pod
 
@@ -25,6 +29,12 @@ In a Kubernetes cluster, the runtime simply calls the rest API given by Kubernet
 ### Router
 
 The router as we know it maintains some routes to specific resources. Here Moo router maps each pod to its addresses, so we know where to call the stuff running in a pod. You probably realized we need some load balancing techniques here since a pod may have more than just one address. We're gonna talk about this later.
+
+### Logger
+
+Since the genesis of software, almost every system has implemented a way of monitoring what is happening in runtime. Logger is the one doing such work for the Moo engine. But further, the Moo logger not only just remembers everything, but also provides an interface for the outside world via the Moo server which we'll be talking about later, to read those memories, I mean logs.
+
+Logs are produced by both the engine itself and those running pods.
 
 ### Gateway
 
