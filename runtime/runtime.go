@@ -1,6 +1,9 @@
 package runtime
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Runtime interface {
 	// Create creates a pod containing a process
@@ -25,6 +28,16 @@ func (p Pod) String() string {
 	return fmt.Sprintf("%s:%s", p.Name, p.Tag)
 }
 
+func Parse(rawPod string) (*Pod, error) {
+	pod := &Pod{}
+	i := strings.IndexByte(rawPod, ':')
+	if i != -1 {
+		pod.Tag = rawPod[i+1:]
+	}
+	pod.Name = rawPod[:i]
+	return pod, nil
+}
+
 func (p *Pod) Status(status Status, err error) {
 	if p.Metadata == nil {
 		p.Metadata = make(map[string]string)
@@ -44,12 +57,14 @@ func (s Status) String() string {
 const (
 	Pending Status = iota
 	Running
+	Stopping
 	Exited
 )
 
 var StatusText = [...]string{
 	"pendding",
 	"running",
+	"stopping",
 	"exited",
 }
 

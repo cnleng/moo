@@ -43,7 +43,10 @@ func (c *Cmd) RunCtx(x context.Context) error {
 
 	// find the subcommand. offset is the number of
 	// position arguments of the subcommand.
-	cmd, offset := find(c, args[:i], help)
+	cmd, offset, err := find(c, args[:i], help)
+	if err != nil {
+		return err
+	}
 	if cmd == nil {
 		return errors.New("no such command")
 	}
@@ -89,7 +92,7 @@ func (c *Cmd) Register(cmd *Cmd) {
 }
 
 // finds the subcommand matching the given arguments from top-down.
-func find(root *Cmd, args []string, help bool) (found *Cmd, offset int) {
+func find(root *Cmd, args []string, help bool) (found *Cmd, offset int, err error) {
 	i := 0
 	n := len(args)
 	// use a dummy node to normalize the searching process.
@@ -102,7 +105,7 @@ search:
 			offset = len(cmd.Pos)
 			// see if we exceed the given arguments.
 			if offset >= n-i {
-				return nil, 0
+				return nil, 0, fmt.Errorf("%s needs %d position arguments", cmd.Name, offset)
 			}
 			// we got no position argument to skip if
 			// only with the help flag.

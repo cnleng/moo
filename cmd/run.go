@@ -117,6 +117,6 @@ func Run(c cli.Ctx) error {
 	if err := cli.Create(pod, opts...); err != nil {
 		return err
 	}
-	fmt.Printf("Successfully deployed\n")
+	fmt.Printf("Deployed.\n")
 	return nil
 }

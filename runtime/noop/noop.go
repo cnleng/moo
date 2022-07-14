@@ -54,7 +54,11 @@ func (n *noop) Delete(pod *runtime.Pod, opts ...runtime.DeleteOption) error {
 	key := pod.String()
 	ns := options.Namespace
 	if _, ok := n.pods[ns]; !ok {
-		return nil
+		return errors.New("no such namespace")
+	}
+
+	if _, ok := n.pods[ns][key]; !ok {
+		return errors.New("no such pod")
 	}
 
 	delete(n.pods[ns], key)

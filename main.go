@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"log"
+	"fmt"
+	"os"
 
 	"github.com/moobu/moo/cmd"
 )
@@ -10,6 +11,6 @@ import (
 func main() {
 	ctx := context.Background()
 	if err := cmd.RunCtx(ctx); err != nil {
-		log.Fatal(err)
+		fmt.Fprintln(os.Stderr, err)
 	}
 }

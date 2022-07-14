@@ -81,5 +81,6 @@ func (p *lpod) wait() {
 }
 
 func (p *lpod) stop() error {
+	p.Status(runtime.Stopping, nil)
 	return p.driver.Kill(p.process)
 }

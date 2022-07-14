@@ -102,7 +102,7 @@ func (l *local) Delete(pod *runtime.Pod, opts ...runtime.DeleteOption) error {
 
 	lpod, ok := l.pods[ns][key]
 	if !ok {
-		return nil
+		return errors.New("no such pod")
 	}
 	if err := lpod.stop(); err != nil {
 		return err
