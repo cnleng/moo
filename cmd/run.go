@@ -70,7 +70,6 @@ func Run(c cli.Ctx) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(rawURL)
 	// use the base name of the source if no name is given.
 	name := c.String("name")
 	if len(name) == 0 {
@@ -93,7 +92,6 @@ func Run(c cli.Ctx) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%#v\n", bundle.Source)
 	// specify the output
 	// TODO: use a default file on the machine running the CLI.
 	output := io.Discard

@@ -43,7 +43,7 @@ func (c *Cmd) RunCtx(x context.Context) error {
 
 	// find the subcommand. offset is the number of
 	// position arguments of the subcommand.
-	cmd, offset := find(c, args[:i+1], help)
+	cmd, offset := find(c, args[:i], help)
 	if cmd == nil {
 		return errors.New("no such command")
 	}
@@ -70,7 +70,7 @@ func (c *Cmd) RunCtx(x context.Context) error {
 	context := &ctx{
 		Context: x,
 		cmd:     cmd,
-		pos:     args[i : i+offset],
+		pos:     args[i-offset : i],
 	}
 
 	// run interceptor if provided
@@ -237,5 +237,5 @@ func seperate(args []string) (int, bool) {
 			return i, help
 		}
 	}
-	return len(args) - 1, help
+	return len(args), help
 }
