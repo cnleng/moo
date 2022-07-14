@@ -4,7 +4,7 @@ Moo (mɪnˈfɪnɪti) is an engine for running processes locally or in a Kubernet
 
 ## Architecture
 
-![moo.jpg](https://s2.loli.net/2022/07/14/ajQln1Wswk5YbzE.jpg)
+![moo.jpg](https://s2.loli.net/2022/07/14/WqBFohXeQ9rYSsw.jpg)
 
 Here are some termiologies you need to know before diving in.
 
