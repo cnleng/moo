@@ -1,4 +1,4 @@
-package memory
+package static
 
 import (
 	"sync"
@@ -6,49 +6,49 @@ import (
 	"github.com/moobu/moo/router"
 )
 
-type memory struct {
+type static struct {
 	sync.RWMutex
 	options router.Options
 	routes  map[string]map[uint32]*router.Route
 }
 
-func (m *memory) Register(r *router.Route) error {
-	m.Lock()
-	defer m.Unlock()
+func (s *static) Register(r *router.Route) error {
+	s.Lock()
+	defer s.Unlock()
 
 	pod := r.Pod
-	if _, ok := m.routes[r.Pod]; !ok {
-		m.routes[pod] = make(map[uint32]*router.Route)
+	if _, ok := s.routes[r.Pod]; !ok {
+		s.routes[pod] = make(map[uint32]*router.Route)
 	}
 	sum := r.Sum()
-	if _, ok := m.routes[pod][sum]; ok {
+	if _, ok := s.routes[pod][sum]; ok {
 		return router.ErrDuplicated
 	}
-	m.routes[pod][sum] = r
+	s.routes[pod][sum] = r
 	return nil
 }
 
-func (m *memory) Deregister(r *router.Route) error {
-	m.Lock()
-	defer m.Unlock()
+func (s *static) Deregister(r *router.Route) error {
+	s.Lock()
+	defer s.Unlock()
 
 	pod := r.Pod
-	if _, ok := m.routes[pod]; !ok {
+	if _, ok := s.routes[pod]; !ok {
 		return nil
 	}
 	sum := r.Sum()
-	if _, ok := m.routes[pod][sum]; !ok {
+	if _, ok := s.routes[pod][sum]; !ok {
 		return nil
 	}
-	delete(m.routes[pod], sum)
+	delete(s.routes[pod], sum)
 	return nil
 }
 
-func (m *memory) Lookup(pod string) ([]*router.Route, error) {
-	m.RLock()
-	defer m.RUnlock()
+func (s *static) Lookup(pod string) ([]*router.Route, error) {
+	s.RLock()
+	defer s.RUnlock()
 
-	routes, ok := m.routes[pod]
+	routes, ok := s.routes[pod]
 	if !ok {
 		return nil, router.ErrNotFound
 	}
@@ -66,7 +66,7 @@ func New(opts ...router.Option) router.Router {
 	for _, o := range opts {
 		o(&options)
 	}
-	return &memory{
+	return &static{
 		options: options,
 		routes:  make(map[string]map[uint32]*router.Route),
 	}

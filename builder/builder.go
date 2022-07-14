@@ -9,6 +9,8 @@ type Builder interface {
 	// Clean cleans up a bundle and the dependencies created
 	// during its build.
 	Clean(*Bundle, ...CleanOption) error
+	// String returns the builder's name
+	String() string
 }
 
 type Retriever interface {
@@ -18,15 +20,21 @@ type Retriever interface {
 }
 
 type Source struct {
-	Name   string
+	// Name of the source
+	Name string
+	// Type specifies which builder to use
+	Type string
+	// Remote address of the source
 	Remote string
-	Local  string
+	// Local path of the source, if unset, the builder needs
+	// to retrieve the source uding the remote address. So
+	// Remote must be set if Local is not.
+	Local string
 }
 
 type Bundle struct {
-	Type   string
 	Ref    string
-	Binary string
+	Entry  []string
 	Source *Source
 }
 

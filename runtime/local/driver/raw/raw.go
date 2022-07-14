@@ -16,7 +16,9 @@ func (raw) Fork(r *driver.Runnable) (*driver.Process, error) {
 	if r.Bundle.Source != nil {
 		dir = r.Bundle.Source.Local
 	}
-	cmd := exec.Command(r.Bundle.Binary, r.Args...)
+	name := r.Bundle.Entry[0]
+	args := append(r.Bundle.Entry[1:], r.Args...)
+	cmd := exec.Command(name, args...)
 	cmd.Dir = dir
 	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	pout, err := cmd.StdoutPipe()

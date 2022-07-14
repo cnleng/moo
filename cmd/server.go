@@ -72,10 +72,15 @@ func Server(c cli.Ctx) error {
 
 	// see if we need to initiate the API geteway
 	if c.Bool("gateway") {
-		bin := os.Args[0]
+		bundle := &builder.Bundle{
+			Entry: []string{os.Args[0]},
+			Source: &builder.Source{
+				Remote: "internal",
+			},
+		}
 		err := runtime.Default.Create(&runtime.Pod{Name: "gateway", Tag: "latest"},
 			runtime.CreateWithNamespace("default"),
-			runtime.Bundle(&builder.Bundle{Binary: bin, Source: &builder.Source{Remote: "internal"}}),
+			runtime.Bundle(bundle),
 			runtime.Args("gateway", "--server", addr),
 			runtime.Output(os.Stdout))
 		if err != nil {

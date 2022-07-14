@@ -12,7 +12,7 @@ func TestWait(t *testing.T) {
 	d := New()
 	r := driver.Runnable{
 		Bundle: &builder.Bundle{
-			Binary: "sleep",
+			Entry: []string{"sleep"},
 		},
 		Args: []string{"3"},
 	}
@@ -29,7 +29,7 @@ func TestKill(t *testing.T) {
 	d := New()
 	r := driver.Runnable{
 		Bundle: &builder.Bundle{
-			Binary: "sleep",
+			Entry: []string{"sleep"},
 		},
 		Args: []string{"10"},
 	}

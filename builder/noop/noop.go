@@ -12,7 +12,6 @@ func (n noop) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bu
 		o(&options)
 	}
 	return &builder.Bundle{
-		Type:   "test",
 		Ref:    options.Ref,
 		Source: s,
 	}, nil
@@ -20,6 +19,10 @@ func (n noop) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bu
 
 func (n noop) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {
 	return nil
+}
+
+func (noop) String() string {
+	return "noop"
 }
 
 func New(opts ...builder.Option) builder.Builder {

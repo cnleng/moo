@@ -25,6 +25,10 @@ func New(opts ...client.Option) client.Client {
 	}
 }
 
+func (http) String() string {
+	return "client"
+}
+
 // this is when HTTP sucks!
 func (h *http) invoke(method, url string, body io.Reader) (io.ReadCloser, error) {
 	req, err := std.NewRequest(method, url, body)
@@ -36,7 +40,7 @@ func (h *http) invoke(method, url string, body io.Reader) (io.ReadCloser, error)
 		return nil, err
 	}
 	if res.StatusCode != std.StatusOK {
-		return nil, fmt.Errorf("Moo server responded with status %d", res.StatusCode)
+		return nil, fmt.Errorf("moo server responded with status %d", res.StatusCode)
 	}
 	merr := res.Header.Get("X-Moo-Error")
 	if len(merr) > 0 {
