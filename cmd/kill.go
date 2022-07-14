@@ -18,7 +18,7 @@ func init() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "server",
-				Usage: "address of Moo server",
+				Usage: "specify the address of Moo server",
 				Value: defaultServerAddr,
 			},
 		},

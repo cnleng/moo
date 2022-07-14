@@ -20,7 +20,8 @@ func (g *golang) Build(s *builder.Source, opts ...builder.BuildOption) (*builder
 
 	bin := s.Name
 	cmd := exec.Command("go", "build", "-ldflags=\"-s -w\"", "-o", bin)
-	cmd.Stdout = g.options.Output
+	// use a session logger to write the output to
+	cmd.Stdout = os.Stdout
 	cmd.Dir = s.Local
 
 	return &builder.Bundle{

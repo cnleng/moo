@@ -2,21 +2,13 @@ package builder
 
 import (
 	"context"
-	"io"
 )
 
 type Options struct {
 	Retriever Retriever
-	Output    io.Writer
 }
 
 type Option func(*Options)
-
-func Output(w io.Writer) Option {
-	return func(o *Options) {
-		o.Output = w
-	}
-}
 
 type BuildOptions struct {
 	Context context.Context

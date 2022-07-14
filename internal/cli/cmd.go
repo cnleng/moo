@@ -104,7 +104,7 @@ search:
 			found = cmd
 			offset = len(cmd.Pos)
 			// see if we exceed the given arguments.
-			if offset >= n-i {
+			if offset > n-i {
 				return nil, 0, fmt.Errorf("%s needs %d position arguments", cmd.Name, offset)
 			}
 			// we got no position argument to skip if

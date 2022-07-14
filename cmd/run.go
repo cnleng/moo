@@ -23,38 +23,43 @@ func init() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "name",
-				Usage: "name of the deploy",
+				Usage: "specify a name for the deploy",
 			},
 			&cli.StringFlag{
 				Name:  "ref",
-				Usage: "reference of the source to run",
+				Usage: "specify a reference to deploy",
+			},
+			&cli.StringFlag{
+				Name:  "type",
+				Usage: "specify the language for the builder",
+				Value: "python",
 			},
 			&cli.IntFlag{
 				Name:  "replicas",
-				Usage: "replicas to be deployed",
+				Usage: "specify replicas to be deployed",
 				Value: 1,
 			},
 			&cli.BoolFlag{
 				Name:  "gpu",
-				Usage: "enable GPU support",
+				Usage: "enable GPU support for the pod",
 			},
 			&cli.BoolFlag{
 				Name:  "output",
-				Usage: "enable the standard output",
+				Usage: "enable the client side stdout",
 				Value: true,
 			},
 			&cli.StringSliceFlag{
 				Name:  "env",
-				Usage: "environment variables to run with",
+				Usage: "specify env variables for the deploy",
 			},
 			&cli.StringFlag{
 				Name:  "server",
-				Usage: "address of Moo server",
+				Usage: "specify the address of Moo server",
 				Value: defaultServerAddr,
 			},
 			&cli.StringFlag{
 				Name:  "image",
-				Usage: "specify an image to run",
+				Usage: "specify an image to deploy",
 			},
 		},
 	})
@@ -85,6 +90,7 @@ func Run(c cli.Ctx) error {
 	source := &builder.Source{
 		Name:   name,
 		Remote: rawURL,
+		Type:   c.String("type"),
 	}
 	// tell the server to build the source, so we can use the
 	// runtime later to run the returned bundle.

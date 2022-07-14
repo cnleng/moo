@@ -1,15 +1,13 @@
 package test
 
 import (
-	"os"
-
 	"github.com/moobu/moo/builder"
-	bnoop "github.com/moobu/moo/builder/noop"
+	noopBuilder "github.com/moobu/moo/builder/noop"
 	"github.com/moobu/moo/internal/cli"
 	"github.com/moobu/moo/router"
 	"github.com/moobu/moo/router/static"
 	"github.com/moobu/moo/runtime"
-	rnoop "github.com/moobu/moo/runtime/noop"
+	noopRuntime "github.com/moobu/moo/runtime/noop"
 	"github.com/moobu/moo/server"
 	"github.com/moobu/moo/server/http"
 )
@@ -17,8 +15,8 @@ import (
 type Presets struct{}
 
 func (Presets) Setup(c cli.Ctx) error {
-	builder.Default = bnoop.New(builder.Output(os.Stdout))
-	runtime.Default = rnoop.New()
+	builder.Default = noopBuilder.New()
+	runtime.Default = noopRuntime.New()
 	router.Default = static.New()
 	server.Default = http.New()
 	return nil

@@ -23,25 +23,25 @@ func init() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:  "server",
-				Usage: "address of the server",
+				Usage: "specify the address of Moo server",
 				Value: defaultServerAddr,
 			},
 			&cli.IntFlag{
 				Name:  "port",
-				Usage: "port the gateway listens on",
+				Usage: "specify a port the gateway listens on",
 				Value: defaultGatewayPort,
 			},
 			&cli.BoolFlag{
 				Name:  "secure",
-				Usage: "enable TLS",
+				Usage: "enable TLS for the gateway",
 			},
 			&cli.StringFlag{
 				Name:  "cert",
-				Usage: "path to TLS certificate",
+				Usage: "specify the path to the TLS certificate",
 			},
 			&cli.StringFlag{
 				Name:  "key",
-				Usage: "path to TLS public key",
+				Usage: "specify the path to the TLS public key",
 			},
 		},
 	})

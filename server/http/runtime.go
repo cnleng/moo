@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/moobu/moo/runtime"
 )
@@ -29,6 +30,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	// TODO: create a file for this session to output the log to
 	options := args.Options
 	opts := []runtime.CreateOption{
+		runtime.Output(os.Stdout),
 		runtime.Args(options.Args...),
 		runtime.Env(options.Env...),
 		runtime.Image(options.Image),
@@ -37,8 +39,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		runtime.GPU(options.GPU),
 		runtime.CreateWithNamespace(options.Namespace),
 	}
-	err := runtime.Create(args.Pod, opts...)
-	writeJSON(w, nil, err)
+	writeJSON(w, nil, runtime.Create(args.Pod, opts...))
 }
 
 type DeleteArgs struct {

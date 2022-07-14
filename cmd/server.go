@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
 
 	"github.com/moobu/moo/builder"
@@ -37,6 +38,11 @@ func init() {
 			&cli.BoolFlag{
 				Name:  "gateway",
 				Usage: "enable the API gateway",
+			},
+			&cli.IntFlag{
+				Name:  "gateway-port",
+				Usage: "specify a port for the gateway",
+				Value: defaultGatewayPort,
 			},
 			&cli.BoolFlag{
 				Name:  "secure",
@@ -81,7 +87,7 @@ func Server(c cli.Ctx) error {
 		err := runtime.Default.Create(&runtime.Pod{Name: "gateway", Tag: "latest"},
 			runtime.CreateWithNamespace("default"),
 			runtime.Bundle(bundle),
-			runtime.Args("gateway", "--server", addr),
+			runtime.Args("gateway", "--server", addr, "--port", strconv.Itoa(c.Int("gateway-port"))),
 			runtime.Output(os.Stdout))
 		if err != nil {
 			return err
