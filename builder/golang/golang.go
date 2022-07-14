@@ -22,18 +22,19 @@ func (g *golang) Build(s *builder.Source, opts ...builder.BuildOption) (*builder
 	cmd := exec.Command("go", "build", "-ldflags=\"-s -w\"", "-o", bin)
 	// use a session logger to write the output to
 	cmd.Stdout = os.Stdout
-	cmd.Dir = s.Local
+	cmd.Dir = options.Dir
 
 	return &builder.Bundle{
 		Ref:    options.Ref,
-		Entry:  []string{filepath.Join(s.Local, bin)},
+		Dir:    options.Dir,
+		Entry:  []string{filepath.Join(options.Dir, bin)},
 		Source: s,
 	}, nil
 }
 
 func (g *golang) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {
 	// we clean up just by removing the binary
-	return os.Remove(filepath.Join(b.Source.Local, b.Source.Name))
+	return os.Remove(filepath.Join(b.Dir, b.Source.Name))
 }
 
 func (g golang) String() string {

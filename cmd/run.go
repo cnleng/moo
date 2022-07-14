@@ -88,9 +88,9 @@ func Run(c cli.Ctx) error {
 		tag = ref
 	}
 	source := &builder.Source{
-		Name:   name,
-		Remote: rawURL,
-		Type:   c.String("type"),
+		Name: name,
+		URL:  rawURL,
+		Type: c.String("type"),
 	}
 	// tell the server to build the source, so we can use the
 	// runtime later to run the returned bundle.

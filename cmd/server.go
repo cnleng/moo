@@ -81,7 +81,7 @@ func Server(c cli.Ctx) error {
 		bundle := &builder.Bundle{
 			Entry: []string{os.Args[0]},
 			Source: &builder.Source{
-				Remote: "internal",
+				URL: "internal",
 			},
 		}
 		err := runtime.Default.Create(&runtime.Pod{Name: "gateway", Tag: "latest"},

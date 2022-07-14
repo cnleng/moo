@@ -13,24 +13,23 @@ type Builder interface {
 	String() string
 }
 
-type Retriever interface {
-	// Retrieve retrieves a source typically a git repository
-	// from remote platforms like GitHub.
-	Retrieve(string) (*Source, error)
-}
-
 type Source struct {
 	// Name of the source
 	Name string
 	// Type specifies which builder to use
 	Type string
-	// Remote address of the source
-	Remote string
+	// URL address of the source
+	URL string
 }
 
 type Bundle struct {
-	Ref    string
-	Entry  []string
+	// Dir is the path of the bundle
+	Dir string
+	// Reference on which the bundle was built
+	Ref string
+	// Entry command and arguments
+	Entry []string
+	// Source built
 	Source *Source
 }
 

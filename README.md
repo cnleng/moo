@@ -10,7 +10,7 @@ Here are some termiologies you need to know before diving in.
 
 ### Builder
 
-The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git service like [GitHub](https://github.com). There are several [builders](./builder/) implemented for some programming languages of the day, such as Python, Julia and Go, the one that makes Moo come true. And there is also a high-level implementation of the builder which is called the mixed builder that can automatically select a builder to build the source when being called.
+The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git service like [GitHub](https://github.com). There are several [builders](./builder/) implemented for some programming languages of the day, such as Python, Julia and Go, the one that makes Moo come true. And there is also a high-level implementation of the builder called the auto builder that can automatically select a language-specific builder to build the source when being used.
 
 If Moo is running in your local machine and the programming language the source uses needs a virtual machine to execute, for example, you are going to deploy a Python project, the builder, according to your choice, can either build it to an image using an OCI manager such as the [Podman](https://podman.io) or stay unchanged but with dependencies installed in an isolated environment.
 

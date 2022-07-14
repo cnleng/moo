@@ -15,9 +15,9 @@ type Presets interface {
 }
 
 var preset = map[string]Presets{
-	"test":       test.Presets{},
-	"local":      local.Presets{},
-	"kubernetes": kubernetes.Presets{},
+	"test":       test.Preset{},
+	"local":      local.Preset{},
+	"kubernetes": kubernetes.Preset{},
 }
 
 func Register(p Presets) {

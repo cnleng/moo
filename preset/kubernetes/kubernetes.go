@@ -9,15 +9,15 @@ import (
 	"github.com/moobu/moo/server/http"
 )
 
-type Presets struct{}
+type Preset struct{}
 
-func (Presets) Setup(c cli.Ctx) error {
+func (Preset) Setup(c cli.Ctx) error {
 	runtime.Default = kubernetes.New()
 	router.Default = nil // TODO: should we have a router built on kubernetes?
 	server.Default = http.New()
 	return nil
 }
 
-func (Presets) String() string {
+func (Preset) String() string {
 	return "kubernetes"
 }

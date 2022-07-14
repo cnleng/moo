@@ -3,6 +3,8 @@ package test
 import (
 	"github.com/moobu/moo/builder"
 	noopBuilder "github.com/moobu/moo/builder/noop"
+	"github.com/moobu/moo/builder/retriever"
+	noopRetriever "github.com/moobu/moo/builder/retriever/noop"
 	"github.com/moobu/moo/internal/cli"
 	"github.com/moobu/moo/router"
 	"github.com/moobu/moo/router/static"
@@ -12,16 +14,16 @@ import (
 	"github.com/moobu/moo/server/http"
 )
 
-type Presets struct{}
+type Preset struct{}
 
-func (Presets) Setup(c cli.Ctx) error {
-	builder.Default = noopBuilder.New()
+func (Preset) Setup(c cli.Ctx) error {
+	builder.Default = retriever.New(noopRetriever.New(), noopBuilder.New())
 	runtime.Default = noopRuntime.New()
 	router.Default = static.New()
 	server.Default = http.New()
 	return nil
 }
 
-func (Presets) String() string {
+func (Preset) String() string {
 	return "test"
 }

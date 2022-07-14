@@ -21,7 +21,7 @@ func (p *python) Build(s *builder.Source, opts ...builder.BuildOption) (*builder
 	cmd := exec.Command("conda", "create", "-y", "-n", s.Name)
 	// use a session logger to write the output to
 	cmd.Stdout = os.Stdout
-	cmd.Dir = s.Local
+	cmd.Dir = options.Dir
 	if err := cmd.Run(); err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (p *python) Build(s *builder.Source, opts ...builder.BuildOption) (*builder
 	cmd = exec.Command("conda", "install", "-r", requires, "-y")
 	// use a session logger to write the output to
 	cmd.Stdout = os.Stdout
-	cmd.Dir = s.Local
+	cmd.Dir = options.Dir
 	if err := cmd.Run(); err != nil {
 		return nil, err
 	}
@@ -54,7 +54,6 @@ func (p *python) Clean(b *builder.Bundle, opts ...builder.CleanOption) error {
 	// we clean up the bundle by removing its entire conda environment
 	cmd := exec.Command("conda", "env", "remove", "-n", b.Source.Name, "-y")
 	cmd.Stdout = os.Stdout
-	cmd.Dir = b.Source.Local
 	return cmd.Run()
 }
 

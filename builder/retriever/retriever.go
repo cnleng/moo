@@ -6,26 +6,34 @@ import (
 	"github.com/moobu/moo/builder"
 )
 
-// retriever is a high-level implementation of the builder interface
+type Retriever interface {
+	// Retrieve retrieves a source typically a git repository
+	// from remote platforms like GitHub.
+	Retrieve(string, ...RetrieveOption) (*Repository, error)
+	// String returns the name of the implementation
+	String() string
+}
+
+type Repository struct {
+	Path string
+}
+
 type retriever struct {
 	options builder.Options
 	next    builder.Builder
+	r       Retriever
 }
 
 func (r *retriever) Build(s *builder.Source, opts ...builder.BuildOption) (*builder.Bundle, error) {
-	if len(s.Local) == 0 && len(s.Remote) == 0 {
-		return nil, errors.New("either local or remote source is needed")
+	if len(s.URL) == 0 {
+		return nil, errors.New("missing the source address")
 	}
-	if len(s.Local) > 0 {
-		return r.next.Build(s, opts...)
-	}
-	// we retrieve the source using the given retriever
-	// if no local repository is provided.
-	src, err := r.options.Retriever.Retrieve(s.Remote)
+	repo, err := r.r.Retrieve(s.URL)
 	if err != nil {
 		return nil, err
 	}
-	return r.next.Build(src, opts...)
+	opts = append(opts, builder.Dir(repo.Path)) // this is weired but I like it :sweating:
+	return r.next.Build(s, opts...)
 }
 
 func (r retriever) Clean(bun *builder.Bundle, opts ...builder.CleanOption) error {
@@ -39,7 +47,7 @@ func (r retriever) String() string {
 // New creates a retriever builder whose Build method retrieves the source
 // code from the given URL of the remote repository and then uses the next
 // builder to build the source code.
-func New(next builder.Builder, opts ...builder.Option) builder.Builder {
+func New(r Retriever, next builder.Builder, opts ...builder.Option) builder.Builder {
 	var options builder.Options
 	for _, o := range opts {
 		o(&options)
@@ -47,5 +55,6 @@ func New(next builder.Builder, opts ...builder.Option) builder.Builder {
 	return &retriever{
 		options: options,
 		next:    next,
+		r:       r,
 	}
 }

@@ -14,7 +14,7 @@ type raw struct{}
 func (raw) Fork(r *driver.Runnable) (*driver.Process, error) {
 	var dir string
 	if r.Bundle.Source != nil {
-		dir = r.Bundle.Source.Local
+		dir = r.Bundle.Dir
 	}
 	name := r.Bundle.Entry[0]
 	args := append(r.Bundle.Entry[1:], r.Args...)

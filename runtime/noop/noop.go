@@ -37,7 +37,7 @@ func (n *noop) Create(pod *runtime.Pod, opts ...runtime.CreateOption) error {
 
 	pod.Status(runtime.Running, nil)
 	pod.Metadata["started"] = time.Now().Format(time.RFC3339)
-	pod.Metadata["source"] = options.Bundle.Source.Remote
+	pod.Metadata["source"] = options.Bundle.Source.URL
 	n.pods[ns][key] = pod
 	return nil
 }

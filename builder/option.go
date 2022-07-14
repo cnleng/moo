@@ -1,25 +1,19 @@
 package builder
 
-import (
-	"context"
-)
-
-type Options struct {
-	Retriever Retriever
-}
+type Options struct{}
 
 type Option func(*Options)
 
 type BuildOptions struct {
-	Context context.Context
-	Ref     string
+	Dir string
+	Ref string
 }
 
 type BuildOption func(*BuildOptions)
 
-func BuildContext(c context.Context) BuildOption {
+func Dir(dir string) BuildOption {
 	return func(o *BuildOptions) {
-		o.Context = c
+		o.Dir = dir
 	}
 }
 
@@ -29,14 +23,6 @@ func Ref(ref string) BuildOption {
 	}
 }
 
-type CleanOptions struct {
-	Context context.Context
-}
+type CleanOptions struct{}
 
 type CleanOption func(*CleanOptions)
-
-func CleanContext(c context.Context) CleanOption {
-	return func(o *CleanOptions) {
-		o.Context = c
-	}
-}
