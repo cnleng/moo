@@ -10,21 +10,21 @@ Here are some termiologies you need to know before diving in.
 
 ### Builder
 
-The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git repository like [GitHub](https://github.com). There are several builders implemented for some programming languages of the day, such as Python, Julia and Go, the one that makes Moo come true. And there is also a high-level implementation of the builder which is called the mixed builder that can automatically select a builder for the source when being called.
+The builder is used to turn sources into bundles which are then delivered to the runtime that runs each bundle in one or several pods. The sources could be a series of files retrieved from a remote Git service like [GitHub](https://github.com). There are several [builders](./builder/) implemented for some programming languages of the day, such as Python, Julia and Go, the one that makes Moo come true. And there is also a high-level implementation of the builder which is called the mixed builder that can automatically select a builder to build the source when being called.
 
-If Moo is running in your local machine and the programming language the source uses needs a virtual machine to execute it, for example, you are going to deploy a Python project, the builder, according to your choice, can either build it to an image using an OCI manager such as the [Podman](https://podman.io) or stay unchanged but with dependencies installed in an isolated environment.
+If Moo is running in your local machine and the programming language the source uses needs a virtual machine to execute, for example, you are going to deploy a Python project, the builder, according to your choice, can either build it to an image using an OCI manager such as the [Podman](https://podman.io) or stay unchanged but with dependencies installed in an isolated environment.
 
 While in a Kubernetes cluster, the builder does nothing because you can only deploy pre-built images to the cluster, instead of the runtime-built ones, according to the current design of Moo.
 
 ### Pod
 
-In a Kubernetes cluster, a pod is an instance that has several containers running in it. Here for Moo, we reuse the concept but only when running in a k8s or k3s cluster. When in a local machine, a pod refers to an isolated environment created by the Moo builder. In the isoluted environment runs the actual process, an inferencing service for instance. The way to isolate environments depends on which driver the Moo runtime uses. We'll explain that later.
+In a Kubernetes cluster, a pod is an instance that has several containers running in it. Here for Moo, we reuse the concept but when in a local machine, a pod refers to an isolated environment created by the Moo builder. In the isoluted environment runs the actual process, an inferencing service for instance. The way to isolate environments depends on which driver the Moo runtime uses. We'll explain that later.
 
 ### Runtime
 
-Runtime is the magic behind the Moo Engine, it maintains all the pods. For example, the runtime will restart those dead pods as long as it does not exceed the maximum retries of the pod.
+Runtime is the magic behind the Moo engine, it maintains all the pods. For example, the runtime will restart those dead pods as long as it does not exceed the maximum retries of the pod.
 
-In a Kubernetes cluster, the runtime simply calls the rest API given by Kubernetes to create or delete pods or list them by conditions. While in your local machine, Moo uses some drivers implemented [here](./runtime/local/driver/) to make those approaches and each driver needs to run a pod in an isolated environment created by the Moo builder. The simplest implementation Moo uses now is the [conda driver](./runtime/local/driver/conda/). ~~We will try to make a better implementation based directly on the cgroup and the namespace technique of Linux.~~ You can use the [Podman driver](./runtime/local/driver/podman/) instead.
+In a Kubernetes cluster, the runtime simply calls the rest API given by Kubernetes to create or delete pods or list them by conditions. While in your local machine, Moo uses some drivers implemented [here](./runtime/local/driver/) to make those approaches and each driver needs to run a pod in an isolated environment created by the Moo builder. The simplest implementation Moo uses now is the [raw driver](./runtime/local/driver/raw/). ~~We will try to make a better implementation based directly on the cgroup and the namespace technique of Linux.~~ You can use the [Podman driver](./runtime/local/driver/podman/) instead.
 
 ### Router
 
@@ -35,6 +35,10 @@ The router as we know it maintains some routes to specific resources. Here Moo r
 Since the genesis of software, almost every system has implemented a way of monitoring what is happening in runtime. Logger is the one doing such work for the Moo engine. But further, the Moo logger not only just remembers everything, but also provides an interface for the outside world via the Moo server which we'll be talking about later, to read those memories, I mean logs.
 
 Logs are produced by both the engine itself and those running pods.
+
+### Rules
+
+Rules define some restrictions for whatever accesses the Moo engine and are used by the Moo server and the Moo gateway that we'll be talking about then.
 
 ### Gateway
 
@@ -52,7 +56,7 @@ The Moo Client is just an encapsulation of some HTTP calls to the Moo server tha
 
 ### Preset
 
-Preset is not shown in the architecture graph but it's important. It is a design pattern learned from [micro](https://github.com/micro/micro), the microservice platform of the future, to initialize the components we have talked about above when starting up the Moo engine. By now, we have three preset defined as follows.
+Preset is not shown in the architecture graph but it's important. It is a design pattern learned from [micro](https://github.com/micro/micro), the microservice platform of the future, to initialize the components we have talked about when starting up the Moo engine. By now, we have three preset defined as follows.
 
 - **local** for running Moo in your own local machine
 - **kubernetes** for running Moo in a k8s/k3s cluster

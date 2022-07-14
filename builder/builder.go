@@ -26,10 +26,6 @@ type Source struct {
 	Type string
 	// Remote address of the source
 	Remote string
-	// Local path of the source, if unset, the builder needs
-	// to retrieve the source uding the remote address. So
-	// Remote must be set if Local is not.
-	Local string
 }
 
 type Bundle struct {
